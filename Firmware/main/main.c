@@ -122,6 +122,8 @@
       break;
       case ESP_RST_SW:
         RESTART = true;
+        STEP = 1;
+        ROMS.offset = 0;        
       break;
       default:
         RESTART = false;
@@ -766,7 +768,7 @@
   void draw_launcher_options() {
     //has_save_file(ROM.name);
 
-    int x = GAP/3 + 32;
+    int x = ORIGIN.x;
     int y = POS.y + 48;
     int w = 5;
     int h = 5;
@@ -779,8 +781,8 @@
       for(int r = 0; r < 5; r++){for(int c = 0; c < 5; c++) {
         buffer[i] = icons[r+offset][c] == WHITE ? OPTION == 0 ? WHITE : GUI.fg : GUI.bg;i++;
       }}
-      ili9341_write_frame_rectangleLE(x, y, w, h, buffer);
-      draw_text(x+10,y,"Resume",false,OPTION == 0?true:false);
+      ili9341_write_frame_rectangleLE(x+20, y, w, h, buffer);
+      draw_text(x+32,y,"Resume",false,OPTION == 0?true:false);
       // restart
       i = 0;
       y+=20;
@@ -788,8 +790,8 @@
       for(int r = 0; r < 5; r++){for(int c = 0; c < 5; c++) {
         buffer[i] = icons[r+offset][c] == WHITE ? OPTION == 1 ? WHITE : GUI.fg : GUI.bg;i++;
       }}
-      ili9341_write_frame_rectangleLE(x, y, w, h, buffer);
-      draw_text(x+10,y,"Restart",false,OPTION == 1?true:false);
+      ili9341_write_frame_rectangleLE(x+20, y, w, h, buffer);
+      draw_text(x+32,y,"Restart",false,OPTION == 1?true:false);
       // restart
       i = 0;
       y+=20;
@@ -797,8 +799,8 @@
       for(int r = 0; r < 5; r++){for(int c = 0; c < 5; c++) {
         buffer[i] = icons[r+offset][c] == WHITE ? OPTION == 2 ? WHITE : GUI.fg : GUI.bg;i++;
       }}
-      ili9341_write_frame_rectangleLE(x, y, w, h, buffer);
-      draw_text(x+10,y,"Delete Save",false,OPTION == 2?true:false);
+      ili9341_write_frame_rectangleLE(x+20, y, w, h, buffer);
+      draw_text(x+32,y,"Delete Save",false,OPTION == 2?true:false);
     } else {
       // run
       i = 0;
@@ -806,8 +808,8 @@
       for(int r = 0; r < 5; r++){for(int c = 0; c < 5; c++) {
         buffer[i] = icons[r+offset][c] == WHITE ? WHITE : GUI.bg;i++;
       }}
-      ili9341_write_frame_rectangleLE(x, y, w, h, buffer);
-      draw_text(x+10,y,"Install Firmware",false,true);
+      ili9341_write_frame_rectangleLE(x+20, y, w, h, buffer);
+      draw_text(x+32,y,"Install Firmware",false,true);
 
       uint16_t* tile = malloc(TILE_LENGTH);
       draw_tile_image(odroid_settings_RomFilePath_get());
@@ -815,31 +817,44 @@
   }
 //}#pragma endregion GUI
 
-//{#pragma region TILE
+//{#pragma region Tile
   void draw_tile_image(const char* filename) {
     printf("%s: filename='%s'\n", __func__, filename);
     const uint8_t DEFAULT_DATA = 0xff;
 
+
     FILE* file = fopen(filename, "rb");
-    if (!file) {return;}                                   
+    if (!file) {return;}                              
 
     size_t count = fread(FirmwareDescription, 1, FIRMWARE_DESCRIPTION_SIZE, file);
 
     uint16_t* tile = malloc(TILE_LENGTH);
     count = fread(tile, 1, TILE_LENGTH, file);
                                         
-    int i = 0;
+    int x = ORIGIN.x;  
+    int i = 0;    
+    for(int h = 0; h < (TILE_HEIGHT+2); h++) {
+      for(int w = 0; w < TILE_WIDTH+1; w++) {
+        buffer[i] = GUI.fg;
+        i++;
+      }
+    }     
+    ili9341_write_frame_rectangleLE(x+31, POS.y+63, TILE_WIDTH+2, TILE_HEIGHT+1, buffer);
+    i = 0;
     for(int h = 0; h < (TILE_HEIGHT-1); h++) {
       for(int w = 0; w < TILE_WIDTH; w++) {
         buffer[i] = tile[h * TILE_WIDTH + w + 12];
         i++;
       }
     } 
-    ili9341_write_frame_rectangleLE(SCREEN.w - (TILE_WIDTH+16), POS.y+48, TILE_WIDTH, TILE_HEIGHT, buffer);
-    free(tile);
+    ili9341_write_frame_rectangleLE(x+32, POS.y+64, TILE_WIDTH, TILE_HEIGHT, buffer);
+    int y = POS.y+76+TILE_HEIGHT;
+    draw_text(x+32,y,ROM.name,false,false);
 
+    free(tile);
     fclose(file);
   }
+//}#pragma endregion Tile
 
 //{#pragma region Files
   //{#pragma region Sort
@@ -1150,13 +1165,212 @@
   }
 //}#pragma endregion Boot Screens
 
-//{#pragma region FIRMWARE Options
+//{#pragma region Firmware Options
+  void firmware_debug(char *string) {
+    printf("\n**********\n%s\n**********\n", string);
+  }
+
+  void firmware_status(char *string) {
+    int x = ORIGIN.x+32;
+    int y = SCREEN.h-16;
+    int w = SCREEN.w-32;
+    int h = 16;                                       
+    draw_mask(x, y-2, w, h+4);
+    draw_text(x,y,string,false,true);  
+  }
+
+  void firmware_progress(int percentage) {
+    int x = ORIGIN.x+32;
+    int y = SCREEN.h-32;
+    int w, h;
+
+    int i = 0;
+
+    if(percentage >= 99) {
+      draw_mask(x,y,100,7);
+      return;
+    }
+
+    for(h = 0; h < 7; h++) {
+      for(w = 0; w < 100; w++) {
+        buffer[i] = (w+h)%2 == 0 ? GUI.fg : GUI.bg;
+        i++;
+      }
+    }
+    ili9341_write_frame_rectangleLE(x, y, 100, 7, buffer);
+
+    if(percentage > 0) {
+      i = 0;
+      for(h = 0; h < 7; h++) {
+        for(w = 0; w < (percentage); w++) {
+          buffer[i] = WHITE;
+          i++;
+        }
+      }
+      ili9341_write_frame_rectangleLE(x, y, (percentage), 7, buffer);
+    }
+  }    
+
   void firmware_run(bool resume) {
+    const char* filename = odroid_settings_RomFilePath_get();
+    const char message[100];
 
+    int x = ORIGIN.x+32;
+    int y = SCREEN.h-16;
+    int w = SCREEN.w-32;
+    int h = 16;
+
+    draw_mask(x, y-2, w, h+4);
+    draw_text(x,y,"Preparing",false,true);
+
+    /*
+      FILE
+    */
+    FILE* file = fopen(filename, "rb");
+    if (!file) {
+      sprintf(message, "%s: FILE ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("FILE ERROR");
+      return;
+    } 
+
+    /*
+      ERASE
+    */
+    const int ERASE_BLOCK_SIZE = 4096;
+    void* data = malloc(ERASE_BLOCK_SIZE);
+    if (!data) {
+      sprintf(message, "%s: DATA ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("DATA ERROR");   
+      return;
+    }
+
+    size_t current_position = ftell(file);
+    fseek(file, 0, SEEK_END);
+    size_t file_size = ftell(file);
+
+    /*
+      CHECKSUM
+    */
+    uint32_t expected_checksum;
+    fseek(file, file_size - sizeof(expected_checksum), SEEK_SET);
+    size_t count = fread(&expected_checksum, 1, sizeof(expected_checksum), file);        
+
+    if (count != sizeof(expected_checksum)) {
+      sprintf(message, "%s: CHECKSUM READ ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("CHECKSUM READ ERROR");    
+      return;      
+    }
+
+    /*
+      SEEK
+    */    
+    fseek(file, 0, SEEK_SET);
+
+    uint32_t checksum = 0;
+    size_t check_offset = 0;    
+
+    /*
+      READ
+    */
+    int i = 0;
+    int dot = 0;
+    double percentage = 0;
+    while(true) {
+      count = fread(data, 1, ERASE_BLOCK_SIZE, file);
+      if (check_offset + count == file_size){count -= 4;}
+      checksum = crc32_le(checksum, data, count);
+      check_offset += count;
+      percentage = ((double)check_offset/(double)file_size)*100;
+      firmware_progress((int)percentage);
+      i++;
+      if(i%25 == 0) {
+        dot++;
+        if(dot == 4) {dot = 0;}
+        draw_mask(x, y-2, w, h+4);
+        switch(dot) {
+          case 1:
+            draw_text(x,y,"Verifying.",false,true);
+          break;
+          case 2:
+            draw_text(x,y,"Verifying..",false,true);
+          break;
+          case 3:
+            draw_text(x,y,"Verifying...",false,true);
+          break;
+          default:
+            draw_text(x,y,"Verifying",false,true);
+          break;                              
+        }
+      }
+      if (count < ERASE_BLOCK_SIZE) break;
+    }    
+
+    if (checksum != expected_checksum)
+    {
+      sprintf(message, "%s: CHECKSUM MISMATCH ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("CHECKSUM MISMATCH ERROR");    
+      return;
+    }
+
+    /*
+      Restore
+    */
+    fseek(file, current_position, SEEK_SET);
+
+    /*
+      Partition
+    */
+    const esp_partition_t* factory_part = esp_partition_find_first(ESP_PARTITION_TYPE_APP,ESP_PARTITION_SUBTYPE_APP_FACTORY, NULL);
+    if (factory_part == NULL)
+    {
+      sprintf(message, "%s: FACTORY PARTITION ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("FACTORY PARTITION ERROR");    
+      return;
+    }
+
+    /*
+      Flash
+    */
+    const size_t FLASH_START_ADDRESS = factory_part->address + factory_part->size;    
+
+    /*
+      Parts
+    */
+    const size_t PARTS_MAX = 20;
+    int parts_count = 0;
+    odroid_partition_t* parts = malloc(sizeof(odroid_partition_t) * PARTS_MAX);    
+
+    if (!parts)
+    {
+      sprintf(message, "%s: PARTITION MEMORY ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("PARTITION MEMORY ERROR");    
+      return;
+    }    
+
+    /*
+      Copy
+    */
+    size_t curren_flash_address = FLASH_START_ADDRESS;
+    
+
+    //sprintf(message, "%s: SUCCESS", __func__);
+    firmware_status("SUCCESS");
+
+    fclose(file);
+    free(data);
+
+
+    /*
     set_restore_states();
 
     draw_background();
-    char *message = !resume ? "loading..." : "hold start";
+    char *message = "loading...";
 
     int h = 5;
     int w = strlen(message)*h;
@@ -1175,34 +1389,10 @@
     //odroid_system_application_set(PROGRAMS[STEP-1]);
     usleep(10000);
     esp_restart();
+    */
   }
 
-  void firmware_resume() {
-
-    set_restore_states();
-
-    draw_background();
-    char message[100] = "resuming...";
-    int h = 5;
-    int w = strlen(message)*h;
-    int x = (SCREEN.w/2)-(w/2);
-    int y = (SCREEN.h/2)-(h/2);
-    draw_text(x,y,message,false,false);
-    y+=10;
-    for(int n = 0; n < (w+10); n++) {
-      for(int i = 0; i < 5; i++) {
-        buffer[i] = GUI.fg;
-      }
-      ili9341_write_frame_rectangleLE(x+n, y, 1, 5, buffer);
-      usleep(15000);
-    }
-
-    //odroid_system_application_set(PROGRAMS[STEP-1]);
-    usleep(10000);
-    esp_restart();
-  }
-
-  void firmware_delete_save() {
+  void firmware_delete() {
     draw_background();
     char message[100] = "deleting...";
     int width = strlen(message)*5;
@@ -1219,9 +1409,10 @@
       usleep(15000);
     }
 
+    /*
     DIR *directory;
     struct dirent *file;
-    char path[256] = "/sd/odroid/data/";
+    char path[256] = "/sd/odroid/firmware/";
     strcat(&path[strlen(path) - 1], DIRECTORIES[STEP]);
     directory = opendir(path);
     gets(ROM.name);
@@ -1245,9 +1436,10 @@
         }
       }
     }
+    */
     //closedir(path);
   }
-//}#pragma endregion FIRMWARE Options
+//}#pragma endregion Firmware Options
 
 //{#pragma region Launcher
   static void launcher() {
@@ -1483,13 +1675,11 @@
           } else {
             switch(OPTION) {
               case 0:
-                SAVED ? firmware_resume() : firmware_run(false);
-              break;
               case 1:
                 firmware_run(true);
               break;
               case 2:
-                firmware_delete_save();
+                firmware_delete();
               break;
             }
           }

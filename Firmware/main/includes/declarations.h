@@ -77,7 +77,7 @@ void draw_launcher();
 void draw_launcher_options();
 
 /*
-  TILE
+  Tile
 */  
 void draw_tile_image(const char* filename);
 
@@ -106,9 +106,11 @@ void restart();
 /*
   FIRMWARE Options
 */
+void firmware_debug(char *string);
+void firmware_status(char *string);
+void firmware_progress(int percentage);
 void firmware_run(bool resume);
-void firmware_resume();
-void firmware_delete_save();
+void firmware_delete();
 
 /*
   Launcher

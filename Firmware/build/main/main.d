@@ -136,6 +136,7 @@ main.o: \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/lwip/lwip/src/include/lwip/ip6_addr.h \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/lwip/lwip/src/include/lwip/def.h \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/lwip/include/apps/dhcpserver/dhcpserver.h \
+ /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/esp32/include/esp_event_loop.h \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/app_update/include/esp_ota_ops.h \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/spiffs/include/esp_spiffs.h \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/log/include/esp_log.h \
@@ -161,6 +162,8 @@ main.o: \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/newlib/include/machine/endian.h \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/newlib/include/machine/param.h \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/wear_levelling/include/wear_levelling.h \
+ /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/esp32/include/esp_flash_data_types.h \
+ /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/esp32/include/rom/crc.h \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/driver/include/driver/i2c.h \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/esp_ringbuf/include/freertos/ringbuf.h \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/driver/include/driver/adc.h \
@@ -463,6 +466,8 @@ main.o: \
 
 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/lwip/include/apps/dhcpserver/dhcpserver.h:
 
+/Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/esp32/include/esp_event_loop.h:
+
 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/app_update/include/esp_ota_ops.h:
 
 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/spiffs/include/esp_spiffs.h:
@@ -512,6 +517,10 @@ main.o: \
 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/newlib/include/machine/param.h:
 
 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/wear_levelling/include/wear_levelling.h:
+
+/Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/esp32/include/esp_flash_data_types.h:
+
+/Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/esp32/include/rom/crc.h:
 
 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/driver/include/driver/i2c.h:
 

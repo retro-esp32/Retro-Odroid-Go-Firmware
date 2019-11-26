@@ -23,13 +23,15 @@
 #include "esp_heap_caps.h"
 #include "esp_system.h"
 #include "esp_event.h"
+#include "esp_event_loop.h"
 #include "esp_partition.h"
 #include "esp_ota_ops.h"
-#include "esp_partition.h"
 #include "esp_spiffs.h"
 #include "esp_err.h"
 #include "esp_log.h"
 #include "esp_vfs_fat.h"
+#include "esp_flash_data_types.h"
+#include "rom/crc.h"
 
 /*
   Drivers
