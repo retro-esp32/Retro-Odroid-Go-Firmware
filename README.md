@@ -6,3 +6,6 @@ This is currently a **WORK IN PROGRESS** and is not meant for Odroid Go consumpt
 
 Soon<br/>
 ![Teaser](Assets/teaser.jpg)
+
+Progress<br/>
+![Teaser](Assets/teaser.gif)
