@@ -36,6 +36,8 @@
   DIR *directory;
   struct dirent *file;
 
+  const char* HEADER_V00_01 = "ODROIDGO_FIRMWARE_V00_01";  
+
   char FirmwareDescription[FIRMWARE_DESCRIPTION_SIZE];
 //}#pragma endregion Global
 
@@ -72,16 +74,6 @@
     nvs_flash_init();
     odroid_system_init();
 
-    // Audio
-    odroid_audio_init(16000);
-    /*
-    #ifdef CONFIG_LCD_DRIVER_CHIP_RETRO_ESP32
-        odroid_settings_Volume_set(4);
-    #else
-        odroid_settings_Volume_set(3);
-    #endif
-    */
-
     VOLUME = odroid_settings_Volume_get();
     odroid_settings_Volume_set(VOLUME);
 
@@ -103,7 +95,7 @@
 
     // Theme
     get_theme();
-    get_restore_states();
+    // get_restore_states();
 
     // Toggle
     get_toggle();
@@ -133,7 +125,7 @@
     RESTART ? restart() : SPLASH ? splash() : NULL;
     draw_background();
     restore_layout();
-    xTaskCreate(launcher, "launcher", 8192, NULL, 5, NULL);
+    xTaskCreate(launcher, "launcher", 4096, NULL, 5, NULL);
   }
 //}#pragma endregion Main
 
@@ -1212,6 +1204,8 @@
   }    
 
   void firmware_run(bool resume) {
+    
+    size_t count;
     const char* filename = odroid_settings_RomFilePath_get();
     const char message[100];
 
@@ -1220,150 +1214,319 @@
     int w = SCREEN.w-32;
     int h = 16;
 
-    draw_mask(x, y-2, w, h+4);
-    draw_text(x,y,"Preparing",false,true);
+    printf("%s: HEAP=%#010x\n", __func__, esp_get_free_heap_size());
 
-    /*
-      FILE
-    */
-    FILE* file = fopen(filename, "rb");
-    if (!file) {
-      sprintf(message, "%s: FILE ERROR", __func__);
-      firmware_debug(message);
-      firmware_status("FILE ERROR");
-      return;
-    } 
+    firmware_status("Initialization"); 
 
-    /*
-      ERASE
-    */
-    const int ERASE_BLOCK_SIZE = 4096;
-    void* data = malloc(ERASE_BLOCK_SIZE);
-    if (!data) {
-      sprintf(message, "%s: DATA ERROR", __func__);
-      firmware_debug(message);
-      firmware_status("DATA ERROR");   
-      return;
-    }
+    //{#pragma region File
+      FILE* file = fopen(filename, "rb");
+      if (!file) {
+        sprintf(message, "%s: FILE ERROR", __func__);
+        firmware_debug(message);
+        firmware_status("FILE ERROR");
+        return;
+      } 
+    //}#pragma endregion File
 
-    size_t current_position = ftell(file);
-    fseek(file, 0, SEEK_END);
-    size_t file_size = ftell(file);
-
-    /*
-      CHECKSUM
-    */
-    uint32_t expected_checksum;
-    fseek(file, file_size - sizeof(expected_checksum), SEEK_SET);
-    size_t count = fread(&expected_checksum, 1, sizeof(expected_checksum), file);        
-
-    if (count != sizeof(expected_checksum)) {
-      sprintf(message, "%s: CHECKSUM READ ERROR", __func__);
-      firmware_debug(message);
-      firmware_status("CHECKSUM READ ERROR");    
-      return;      
-    }
-
-    /*
-      SEEK
-    */    
-    fseek(file, 0, SEEK_SET);
-
-    uint32_t checksum = 0;
-    size_t check_offset = 0;    
-
-    /*
-      READ
-    */
-    int i = 0;
-    int dot = 0;
-    double percentage = 0;
-    while(true) {
-      count = fread(data, 1, ERASE_BLOCK_SIZE, file);
-      if (check_offset + count == file_size){count -= 4;}
-      checksum = crc32_le(checksum, data, count);
-      check_offset += count;
-      percentage = ((double)check_offset/(double)file_size)*100;
-      firmware_progress((int)percentage);
-      i++;
-      if(i%25 == 0) {
-        dot++;
-        if(dot == 4) {dot = 0;}
-        draw_mask(x, y-2, w, h+4);
-        switch(dot) {
-          case 1:
-            draw_text(x,y,"Verifying.",false,true);
-          break;
-          case 2:
-            draw_text(x,y,"Verifying..",false,true);
-          break;
-          case 3:
-            draw_text(x,y,"Verifying...",false,true);
-          break;
-          default:
-            draw_text(x,y,"Verifying",false,true);
-          break;                              
-        }
+    //{#pragma region Header
+      const size_t headerLength = strlen(HEADER_V00_01);
+      char* header = malloc(headerLength + 1);
+      if(!header) {
+        sprintf(message, "%s: MEMORY ERROR", __func__);
+        firmware_debug(message);
+        firmware_status("MEMORY ERROR");
+        return;
       }
-      if (count < ERASE_BLOCK_SIZE) break;
-    }    
+      memset(header, 0, headerLength + 1);
+      count = fread(header, 1, headerLength, file);
 
-    if (checksum != expected_checksum)
-    {
-      sprintf(message, "%s: CHECKSUM MISMATCH ERROR", __func__);
-      firmware_debug(message);
-      firmware_status("CHECKSUM MISMATCH ERROR");    
-      return;
-    }
+      if (count != headerLength) {
+        sprintf(message, "%s: HEADER READ ERROR", __func__);
+        firmware_debug(message);
+        firmware_status("HEADER READ ERROR");
+        return;
+      }
 
-    /*
-      Restore
-    */
-    fseek(file, current_position, SEEK_SET);
+      if (strncmp(HEADER_V00_01, header, headerLength) != 0) {
+        sprintf(message, "%s: HEADER MATCH ERROR - %s", __func__, header);
+        firmware_debug(message);
+        firmware_status("HEADER MATCH ERROR");
+        return;
+      }
+      firmware_status("Header OK"); 
+      free(header);
+    //}#pragma endregion Header
 
-    /*
-      Partition
-    */
-    const esp_partition_t* factory_part = esp_partition_find_first(ESP_PARTITION_TYPE_APP,ESP_PARTITION_SUBTYPE_APP_FACTORY, NULL);
-    if (factory_part == NULL)
-    {
-      sprintf(message, "%s: FACTORY PARTITION ERROR", __func__);
-      firmware_debug(message);
-      firmware_status("FACTORY PARTITION ERROR");    
-      return;
-    }
+    //{#pragma region Description
+      count = fread(FirmwareDescription, 1, FIRMWARE_DESCRIPTION_SIZE, file);
+      if (count != FIRMWARE_DESCRIPTION_SIZE)
+      {
+        sprintf(message, "%s: DESCRIPTION READ ERROR", __func__);
+        firmware_debug(message);
+        firmware_status("DESCRIPTION READ ERROR");
+        return;
+      }    
+      FirmwareDescription[FIRMWARE_DESCRIPTION_SIZE - 1] = 0;
+    //}#pragma endregion Description
 
-    /*
-      Flash
-    */
-    const size_t FLASH_START_ADDRESS = factory_part->address + factory_part->size;    
+    //{#pragma region Tile
+      uint16_t* tileData = malloc(TILE_LENGTH);
+      if (!tileData)
+      {
+        sprintf(message, "%s: TILE MEMORY ERROR", __func__);
+        firmware_debug(message);
+        firmware_status("TILE MEMORY ERROR");    
+        return;  
+      }
+      count = fread(tileData, 1, TILE_LENGTH, file);
+      if (count != TILE_LENGTH)
+      {
+        sprintf(message, "%s: TILE READ ERROR", __func__);
+        firmware_debug(message);
+        firmware_status("TILE READ ERROR");    
+        return;  
+      }    
+      free(tileData);  
+    //}#pragma endregion Tile     
 
-    /*
-      Parts
-    */
-    const size_t PARTS_MAX = 20;
-    int parts_count = 0;
-    odroid_partition_t* parts = malloc(sizeof(odroid_partition_t) * PARTS_MAX);    
+    //{#pragma region Erase
+      const int ERASE_BLOCK_SIZE = 4096;
+      void* data = malloc(ERASE_BLOCK_SIZE);
+      if (!data) {
+        sprintf(message, "%s: DATA ERROR", __func__);
+        firmware_debug(message);
+        firmware_status("DATA ERROR");   
+        return;
+      }
+    //}#pragma endregion Erase
 
-    if (!parts)
-    {
-      sprintf(message, "%s: PARTITION MEMORY ERROR", __func__);
-      firmware_debug(message);
-      firmware_status("PARTITION MEMORY ERROR");    
-      return;
-    }    
+    //{#pragma region Checksum
+      size_t current_position = ftell(file);
 
-    /*
-      Copy
-    */
-    size_t curren_flash_address = FLASH_START_ADDRESS;
-    
+      fseek(file, 0, SEEK_END);
+      size_t file_size = ftell(file);
+
+      uint32_t expected_checksum;
+      fseek(file, file_size - sizeof(expected_checksum), SEEK_SET);
+      count = fread(&expected_checksum, 1, sizeof(expected_checksum), file);        
+
+      if (count != sizeof(expected_checksum)) {
+        sprintf(message, "%s: CHECKSUM READ ERROR", __func__);
+        firmware_debug(message);
+        firmware_status("CHECKSUM READ ERROR");    
+        return;      
+      }
+
+      fseek(file, 0, SEEK_SET);
+
+      uint32_t checksum = 0;
+      size_t check_offset = 0;    
+    //}#pragma endregion Checksum    
+
+    //{#pragma region Read
+      int i = 0;
+      int dot = 0;
+      double percentage = 0;
+      while(true) {
+        count = fread(data, 1, ERASE_BLOCK_SIZE, file);
+        if (check_offset + count == file_size){count -= 4;}
+        checksum = crc32_le(checksum, data, count);
+        check_offset += count;
+        percentage = ((double)check_offset/(double)file_size)*100;
+        firmware_progress((int)percentage);
+        i++;
+        if(i%25 == 0) {
+          dot++;
+          if(dot == 4) {dot = 0;}
+          draw_mask(x, y-2, w, h+4);
+          switch(dot) {
+            case 1:
+              draw_text(x,y,"Verifying.",false,true);
+            break;
+            case 2:
+              draw_text(x,y,"Verifying..",false,true);
+            break;
+            case 3:
+              draw_text(x,y,"Verifying...",false,true);
+            break;
+            default:
+              draw_text(x,y,"Verifying",false,true);
+            break;                              
+          }
+        }
+
+        if (count < ERASE_BLOCK_SIZE) break;
+      }    
+      
+      if (checksum != expected_checksum) {
+        sprintf(message, "%s: CHECKSUM MISMATCH ERROR", __func__);
+        firmware_debug(message);
+        firmware_status("CHECKSUM MISMATCH ERROR");    
+        return;
+      }
+
+      fseek(file, current_position, SEEK_SET);
+    //}#pragma endregion Read
+
+    //{#pragma region Partition
+      const esp_partition_t* factory_part = esp_partition_find_first(ESP_PARTITION_TYPE_APP,
+              ESP_PARTITION_SUBTYPE_APP_FACTORY, NULL);
+      if (factory_part == NULL)
+      {
+        sprintf(message, "%s: FACTORY PARTITION ERROR", __func__);
+        firmware_debug(message);
+        firmware_status("FACTORY PARTITION ERROR");    
+        return;
+      }
+    //}#pragma endregion Partition
+
+    const size_t FLASH_START_ADDRESS = factory_part->address + factory_part->size; 
+
+    printf("%s: expected_checksum=%#010x\n", __func__, expected_checksum);
+    printf("%s: checksum=%#010x\n", __func__, checksum);
+    printf("%s: FLASH_START_ADDRESS=%#010x\n", __func__, FLASH_START_ADDRESS);
+
+    //{#pragma region Parts
+      const size_t PARTS_MAX = 20;
+      int parts_count = 0;
+      odroid_partition_t* parts = malloc(sizeof(odroid_partition_t) * PARTS_MAX);    
+
+      if (!parts)
+      {
+        sprintf(message, "%s: PARTITION MEMORY ERROR", __func__);
+        firmware_debug(message);
+        firmware_status("PARTITION MEMORY ERROR");   
+        return;
+      }    
+    //}#pragma endregion Parts
+
+    //{#pragma region Copy
+      size_t curren_flash_address = FLASH_START_ADDRESS;
+
+      while(true) {
+        if (ftell(file) >= (file_size - sizeof(checksum))) {
+          break;
+        }
+        odroid_partition_t slot;
+        count = fread(&slot, 1, sizeof(slot), file);
+
+        printf("\n-----------\nFirmware Details\nfile_size:%d\ncurren_flash_address:%d\nslot.length:%d\n(curren_flash_address+length) %d\nmax:%d\n-----------\n", 
+          file_size,
+          curren_flash_address,
+          slot.length, 
+          (curren_flash_address+slot.length),
+          (16 * 1024 * 1024)
+        );          
+
+        //{#pragma region Errors
+          if (count != sizeof(slot)) {
+            sprintf(message, "%s: PARTITION READ ERROR", __func__);
+            firmware_debug(message);
+            firmware_status("PARTITION READ ERROR");   
+            return;      
+          }
+
+          if (parts_count >= PARTS_MAX) {
+            sprintf(message, "%s: PARTITION COUNT ERROR", __func__);
+            firmware_debug(message);
+            firmware_status("PARTITION COUNT ERROR");   
+            return;
+          }
+
+          if (slot.type == 0xff) {
+            sprintf(message, "%s: PARTITION TYPE ERROR", __func__);
+            firmware_debug(message);
+            firmware_status("PARTITION TYPE ERROR");   
+            return;
+          }
+
+          if (curren_flash_address + slot.length > 16 * 1024 * 1024) {
+            sprintf(message, "%s: PARTITION LENGTH ERROR", __func__);
+            firmware_debug(message);
+            firmware_status("PARTITION LENGTH ERROR");   
+            return;
+          }
+
+          if ((curren_flash_address & 0xffff0000) != curren_flash_address) {
+            sprintf(message, "%s: PARTITION ALIGNMENT ERROR", __func__);
+            firmware_debug(message);
+            firmware_status("PARTITION ALIGNMENT ERROR");   
+            return;
+          }
+        //}#pragma endregion Errors
+
+        //{#pragma region Write
+          uint32_t length;
+          count = fread(&length, 1, sizeof(length), file); 
+          
+          if (count != sizeof(length)) {
+            sprintf(message, "%s: LENGTH READ ERROR", __func__);
+            firmware_debug(message);
+            firmware_status("LENGTH READ ERROR");   
+            return;
+          }        
+
+          if (length > slot.length) {
+            sprintf(message, "%s: DATA LENGTH ERROR", __func__);
+            firmware_debug(message);
+            firmware_status("DATA LENGTH ERROR");   
+            return;
+          }
+
+          size_t nextEntry = ftell(file) + length;
+
+          //{#pragma region TX/RX
+            if (length > 0) {
+              int eraseBlocks = length / ERASE_BLOCK_SIZE;
+              if (eraseBlocks * ERASE_BLOCK_SIZE < length) ++eraseBlocks;
+
+              sprintf(message, "Erasing Partition [%d]", parts_count);
+              firmware_debug(message);
+              firmware_status(message);
+              firmware_progress(0);
+
+              esp_err_t ret = spi_flash_erase_range(curren_flash_address, eraseBlocks * ERASE_BLOCK_SIZE);
+
+              if (ret != ESP_OK) {
+                sprintf(message, "%s: ERASE ERROR", __func__);
+                firmware_debug(message);
+                firmware_status("ERASE ERROR");   
+                return;
+              }  
+
+              int totalCount = 0;
+              for (int offset = 0; offset < length; offset += ERASE_BLOCK_SIZE) {
+                percentage = ((double)offset/(double)(length - ERASE_BLOCK_SIZE))*100;                                                                                   
+                // sprintf(message, "Writing Part - %d %d", parts_count, (int)percentage);
+                sprintf(message, "Writing Partition [%d]", parts_count);
+                firmware_debug(message);
+                firmware_status(message);    
+                firmware_progress((int)percentage); 
+
+                count = fread(data, 1, ERASE_BLOCK_SIZE, file);
+                if (count <= 0) {
+                  sprintf(message, "%s: DATA READ ERROR", __func__);
+                  firmware_debug(message);
+                  firmware_status("DATA READ ERROR");   
+                  return;
+                }
+
+                if (offset + count >= length) {
+                    count = length - offset;
+                }                               
+              }            
+            }
+          //}#pragma endregion TX/RX   
+
+        //}#pragma endregion Write            
+      }
+    //}#pragma endregion Copy      
 
     //sprintf(message, "%s: SUCCESS", __func__);
     firmware_status("SUCCESS");
 
-    fclose(file);
-    free(data);
+    close(file);
+    //free(data);
 
 
     /*

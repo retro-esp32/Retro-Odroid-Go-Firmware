@@ -86,15 +86,14 @@ THEME THEMES[22] = {
 };
 THEME GUI;
 
-typedef struct
-{
-    uint8_t type;
-    uint8_t subtype;
-    uint8_t _reserved0;
-    uint8_t _reserved1;
+typedef struct{
+  uint8_t type;
+  uint8_t subtype;
+  uint8_t _reserved0;
+  uint8_t _reserved1;
 
-    uint8_t label[16];
+  uint8_t label[16];
 
-    uint32_t flags;
-    uint32_t length;
+  uint32_t flags;
+  uint32_t length;
 } odroid_partition_t;

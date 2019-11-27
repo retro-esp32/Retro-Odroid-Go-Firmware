@@ -3,7 +3,7 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := retro-esp32
+PROJECT_NAME := Retro-Odroid-Go
 
 include $(IDF_PATH)/make/project.mk
 

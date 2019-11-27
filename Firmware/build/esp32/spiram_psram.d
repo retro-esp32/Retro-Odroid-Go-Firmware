@@ -74,8 +74,7 @@ spiram_psram.o: \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/soc/esp32/include/soc/periph_defs.h \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/soc/esp32/include/soc/spi_pins.h \
  /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/soc/esp32/include/soc/spi_struct.h \
- /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/driver/include/driver/periph_ctrl.h \
- /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/soc/esp32/include/soc/rtc.h
+ /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/driver/include/driver/periph_ctrl.h
 
 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/include/sdkconfig.h:
 
@@ -226,6 +225,4 @@ spiram_psram.o: \
 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/soc/esp32/include/soc/spi_struct.h:
 
 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/driver/include/driver/periph_ctrl.h:
-
-/Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/soc/esp32/include/soc/rtc.h:
 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Tools/esp-idf/components/esp32/./spiram_psram.c:
