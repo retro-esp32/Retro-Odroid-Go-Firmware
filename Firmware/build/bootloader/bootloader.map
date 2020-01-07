@@ -1096,7 +1096,7 @@ END GROUP
  *(.jcr)
                 0x000000003fff001c                _data_end = ABSOLUTE (.)
 
-.dram0.rodata   0x000000003fff001c     0x1bcc
+.dram0.rodata   0x000000003fff001c     0x1be4
                 0x000000003fff001c                _rodata_start = ABSOLUTE (.)
  *(.rodata)
  .rodata        0x000000003fff001c       0x14 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
@@ -1112,91 +1112,91 @@ END GROUP
  .rodata.CSWTCH$18
                 0x000000003fff0530        0xc /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_flash.o)
  .rodata.str1.1
-                0x000000003fff053c      0x425 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
-                                        0x42b (size before relaxing)
+                0x000000003fff053c      0x43e /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
+                                        0x443 (size before relaxing)
  .rodata.CSWTCH$38
-                0x000000003fff0961        0x5 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
- *fill*         0x000000003fff0966        0x2 
+                0x000000003fff097a        0x5 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
+ *fill*         0x000000003fff097f        0x1 
  .rodata.CSWTCH$25
-                0x000000003fff0968       0x14 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
+                0x000000003fff0980       0x14 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
  .rodata.CSWTCH$24
-                0x000000003fff097c       0x40 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
+                0x000000003fff0994       0x40 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
  .rodata.__func__$4451
-                0x000000003fff09bc       0x10 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
+                0x000000003fff09d4       0x10 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
  .rodata.str1.1
-                0x000000003fff09cc       0x8b /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_random.o)
+                0x000000003fff09e4       0x8b /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_random.o)
  .rodata.__func__$2290
-                0x000000003fff0a57       0x17 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_random.o)
+                0x000000003fff0a6f       0x17 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_random.o)
  .rodata.str1.1
-                0x000000003fff0a6e       0xdd /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
+                0x000000003fff0a86       0xdd /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
  .rodata.padding$3889
-                0x000000003fff0b4b       0x40 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
+                0x000000003fff0b63       0x40 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
  .rodata.__func__$3885
-                0x000000003fff0b8b       0x19 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
+                0x000000003fff0ba3       0x19 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
  .rodata.__func__$3865
-                0x000000003fff0ba4       0x17 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
+                0x000000003fff0bbc       0x17 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
  .rodata.str1.1
-                0x000000003fff0bbb      0x50e /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_utility.o)
+                0x000000003fff0bd3      0x50e /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_utility.o)
                                         0x585 (size before relaxing)
  .rodata.str1.1
-                0x000000003fff10c9      0x41f /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(esp_image_format.o)
+                0x000000003fff10e1      0x41f /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(esp_image_format.o)
                                         0x45a (size before relaxing)
  .rodata.str1.1
-                0x000000003fff14e8      0x15c /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_partitions.o)
+                0x000000003fff1500      0x15c /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_partitions.o)
  .rodata.str1.1
-                0x000000003fff1644       0xd9 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_qio_mode.o)
+                0x000000003fff165c       0xd9 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_qio_mode.o)
  .rodata.chip_data
-                0x000000003fff171d       0x6c /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_qio_mode.o)
- *fill*         0x000000003fff1789        0x3 
+                0x000000003fff1735       0x6c /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_qio_mode.o)
+ *fill*         0x000000003fff17a1        0x3 
  .rodata.CSWTCH$38
-                0x000000003fff178c       0x18 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/spi_flash/libspi_flash.a(spi_flash_rom_patch.o)
+                0x000000003fff17a4       0x18 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/spi_flash/libspi_flash.a(spi_flash_rom_patch.o)
  .rodata.GPIO_PIN_MUX_REG
-                0x000000003fff17a4       0xa0 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(gpio_periph.o)
-                0x000000003fff17a4                GPIO_PIN_MUX_REG
+                0x000000003fff17bc       0xa0 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(gpio_periph.o)
+                0x000000003fff17bc                GPIO_PIN_MUX_REG
  .rodata.str1.1
-                0x000000003fff1844       0xa0 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk.o)
+                0x000000003fff185c       0xa0 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk.o)
  .rodata.str1.1
-                0x000000003fff18e4      0x1bc /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
+                0x000000003fff18fc      0x1bc /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
  .rodata.rtc_clk_xtal_freq_estimate
-                0x000000003fff1aa0       0x64 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
+                0x000000003fff1ab8       0x64 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
  .rodata.str1.1
-                0x000000003fff1b04       0xcf /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
+                0x000000003fff1b1c       0xcf /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
  .rodata.__func__$1848
-                0x000000003fff1bd3       0x15 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
+                0x000000003fff1beb       0x15 /Users/eugene/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
  *(.gnu.linkonce.r.*)
  *(.rodata1)
-                0x000000003fff1be8                __XT_EXCEPTION_TABLE_ = ABSOLUTE (.)
+                0x000000003fff1c00                __XT_EXCEPTION_TABLE_ = ABSOLUTE (.)
  *(.xt_except_table)
  *(.gcc_except_table)
  *(.gnu.linkonce.e.*)
  *(.gnu.version_r)
  *(.eh_frame)
-                0x000000003fff1be8                . = ((. + 0x3) & 0xfffffffffffffffc)
-                0x000000003fff1be8                __init_array_start = ABSOLUTE (.)
+                0x000000003fff1c00                . = ((. + 0x3) & 0xfffffffffffffffc)
+                0x000000003fff1c00                __init_array_start = ABSOLUTE (.)
  *crtbegin.*(.ctors)
  *(EXCLUDE_FILE(*crtend.*) .ctors)
  *(SORT(.ctors.*))
  *(.ctors)
-                0x000000003fff1be8                __init_array_end = ABSOLUTE (.)
+                0x000000003fff1c00                __init_array_end = ABSOLUTE (.)
  *crtbegin.*(.dtors)
  *(EXCLUDE_FILE(*crtend.*) .dtors)
  *(SORT(.dtors.*))
  *(.dtors)
-                0x000000003fff1be8                __XT_EXCEPTION_DESCS_ = ABSOLUTE (.)
+                0x000000003fff1c00                __XT_EXCEPTION_DESCS_ = ABSOLUTE (.)
  *(.xt_except_desc)
  *(.gnu.linkonce.h.*)
-                0x000000003fff1be8                __XT_EXCEPTION_DESCS_END__ = ABSOLUTE (.)
+                0x000000003fff1c00                __XT_EXCEPTION_DESCS_END__ = ABSOLUTE (.)
  *(.xt_except_desc_end)
  *(.dynamic)
  *(.gnu.version_d)
-                0x000000003fff1be8                _rodata_end = ABSOLUTE (.)
-                0x000000003fff1be8                _lit4_start = ABSOLUTE (.)
+                0x000000003fff1c00                _rodata_end = ABSOLUTE (.)
+                0x000000003fff1c00                _lit4_start = ABSOLUTE (.)
  *(*.lit4)
  *(.lit4.*)
  *(.gnu.linkonce.lit4.*)
-                0x000000003fff1be8                _lit4_end = ABSOLUTE (.)
-                0x000000003fff1be8                . = ALIGN (0x4)
-                0x000000003fff1be8                _heap_start = ABSOLUTE (.)
+                0x000000003fff1c00                _lit4_end = ABSOLUTE (.)
+                0x000000003fff1c00                . = ALIGN (0x4)
+                0x000000003fff1c00                _heap_start = ABSOLUTE (.)
                 [!provide]                        PROVIDE (Add2SelfBigHex256, 0x40015b7c)
                 [!provide]                        PROVIDE (AddBigHex256, 0x40015b28)
                 [!provide]                        PROVIDE (AddBigHexModP256, 0x40015c98)
