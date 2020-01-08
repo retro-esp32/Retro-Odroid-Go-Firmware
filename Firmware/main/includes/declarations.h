@@ -78,7 +78,7 @@ void draw_launcher_options();
 
 /*
   Tile
-*/  
+*/
 void draw_tile_image(const char* filename);
 
 /*
@@ -110,6 +110,8 @@ void firmware_debug(char *string);
 void firmware_status(char *string);
 void firmware_progress(int percentage);
 void firmware_run(bool resume);
+void firmware_partition(odroid_partition_t* parts, size_t parts_count);
+void firmware_boot();
 void firmware_delete();
 
 /*

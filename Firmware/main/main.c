@@ -36,7 +36,7 @@
   DIR *directory;
   struct dirent *file;
 
-  const char* HEADER_V00_01 = "ODROIDGO_FIRMWARE_V00_01";  
+  const char* HEADER_V00_01 = "ODROIDGO_FIRMWARE_V00_01";
 
   char FirmwareDescription[FIRMWARE_DESCRIPTION_SIZE];
 //}#pragma endregion Global
@@ -115,7 +115,7 @@
       case ESP_RST_SW:
         RESTART = true;
         STEP = 1;
-        ROMS.offset = 0;        
+        ROMS.offset = 0;
       break;
       default:
         RESTART = false;
@@ -816,21 +816,21 @@
 
 
     FILE* file = fopen(filename, "rb");
-    if (!file) {return;}                              
+    if (!file) {return;}
 
     size_t count = fread(FirmwareDescription, 1, FIRMWARE_DESCRIPTION_SIZE, file);
 
     uint16_t* tile = malloc(TILE_LENGTH);
     count = fread(tile, 1, TILE_LENGTH, file);
-                                        
-    int x = ORIGIN.x;  
-    int i = 0;    
+
+    int x = ORIGIN.x;
+    int i = 0;
     for(int h = 0; h < (TILE_HEIGHT+2); h++) {
       for(int w = 0; w < TILE_WIDTH+1; w++) {
         buffer[i] = GUI.fg;
         i++;
       }
-    }     
+    }
     ili9341_write_frame_rectangleLE(x+31, POS.y+63, TILE_WIDTH+2, TILE_HEIGHT+1, buffer);
     i = 0;
     for(int h = 0; h < (TILE_HEIGHT-1); h++) {
@@ -838,7 +838,7 @@
         buffer[i] = tile[h * TILE_WIDTH + w + 12];
         i++;
       }
-    } 
+    }
     ili9341_write_frame_rectangleLE(x+32, POS.y+64, TILE_WIDTH, TILE_HEIGHT, buffer);
     int y = POS.y+76+TILE_HEIGHT;
     draw_text(x+32,y,ROM.name,false,false);
@@ -1166,9 +1166,9 @@
     int x = ORIGIN.x+32;
     int y = SCREEN.h-16;
     int w = SCREEN.w-32;
-    int h = 16;                                       
+    int h = 16;
     draw_mask(x, y-2, w, h+4);
-    draw_text(x,y,string,false,true);  
+    draw_text(x,y,string,false,true);
   }
 
   void firmware_progress(int percentage) {
@@ -1201,10 +1201,10 @@
       }
       ili9341_write_frame_rectangleLE(x, y, (percentage), 7, buffer);
     }
-  }    
+  }
 
   void firmware_run(bool resume) {
-    
+
     size_t count;
     const char* filename = odroid_settings_RomFilePath_get();
     const char message[100];
@@ -1216,7 +1216,7 @@
 
     printf("%s: HEAP=%#010x\n", __func__, esp_get_free_heap_size());
 
-    firmware_status("Initialization"); 
+    firmware_status("Initialization");
 
     //{#pragma region File
       FILE* file = fopen(filename, "rb");
@@ -1225,7 +1225,7 @@
         firmware_debug(message);
         firmware_status("FILE ERROR");
         return;
-      } 
+      }
     //}#pragma endregion File
 
     //{#pragma region Header
@@ -1253,7 +1253,7 @@
         firmware_status("HEADER MATCH ERROR");
         return;
       }
-      firmware_status("Header OK"); 
+      firmware_status("Header OK");
       free(header);
     //}#pragma endregion Header
 
@@ -1265,7 +1265,7 @@
         firmware_debug(message);
         firmware_status("DESCRIPTION READ ERROR");
         return;
-      }    
+      }
       FirmwareDescription[FIRMWARE_DESCRIPTION_SIZE - 1] = 0;
     //}#pragma endregion Description
 
@@ -1275,19 +1275,19 @@
       {
         sprintf(message, "%s: TILE MEMORY ERROR", __func__);
         firmware_debug(message);
-        firmware_status("TILE MEMORY ERROR");    
-        return;  
+        firmware_status("TILE MEMORY ERROR");
+        return;
       }
       count = fread(tileData, 1, TILE_LENGTH, file);
       if (count != TILE_LENGTH)
       {
         sprintf(message, "%s: TILE READ ERROR", __func__);
         firmware_debug(message);
-        firmware_status("TILE READ ERROR");    
-        return;  
-      }    
-      free(tileData);  
-    //}#pragma endregion Tile     
+        firmware_status("TILE READ ERROR");
+        return;
+      }
+      free(tileData);
+    //}#pragma endregion Tile
 
     //{#pragma region Erase
       const int ERASE_BLOCK_SIZE = 4096;
@@ -1295,7 +1295,7 @@
       if (!data) {
         sprintf(message, "%s: DATA ERROR", __func__);
         firmware_debug(message);
-        firmware_status("DATA ERROR");   
+        firmware_status("DATA ERROR");
         return;
       }
     //}#pragma endregion Erase
@@ -1308,20 +1308,20 @@
 
       uint32_t expected_checksum;
       fseek(file, file_size - sizeof(expected_checksum), SEEK_SET);
-      count = fread(&expected_checksum, 1, sizeof(expected_checksum), file);        
+      count = fread(&expected_checksum, 1, sizeof(expected_checksum), file);
 
       if (count != sizeof(expected_checksum)) {
         sprintf(message, "%s: CHECKSUM READ ERROR", __func__);
         firmware_debug(message);
-        firmware_status("CHECKSUM READ ERROR");    
-        return;      
+        firmware_status("CHECKSUM READ ERROR");
+        return;
       }
 
       fseek(file, 0, SEEK_SET);
 
       uint32_t checksum = 0;
-      size_t check_offset = 0;    
-    //}#pragma endregion Checksum    
+      size_t check_offset = 0;
+    //}#pragma endregion Checksum
 
     //{#pragma region Read
       int i = 0;
@@ -1351,17 +1351,17 @@
             break;
             default:
               draw_text(x,y,"Verifying",false,true);
-            break;                              
+            break;
           }
         }
 
         if (count < ERASE_BLOCK_SIZE) break;
-      }    
-      
+      }
+
       if (checksum != expected_checksum) {
         sprintf(message, "%s: CHECKSUM MISMATCH ERROR", __func__);
         firmware_debug(message);
-        firmware_status("CHECKSUM MISMATCH ERROR");    
+        firmware_status("CHECKSUM MISMATCH ERROR");
         return;
       }
 
@@ -1369,18 +1369,17 @@
     //}#pragma endregion Read
 
     //{#pragma region Partition
-      const esp_partition_t* factory_part = esp_partition_find_first(ESP_PARTITION_TYPE_APP,
-              ESP_PARTITION_SUBTYPE_APP_FACTORY, NULL);
+      const esp_partition_t* factory_part = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_APP_FACTORY, NULL);
       if (factory_part == NULL)
       {
         sprintf(message, "%s: FACTORY PARTITION ERROR", __func__);
         firmware_debug(message);
-        firmware_status("FACTORY PARTITION ERROR");    
+        firmware_status("FACTORY PARTITION ERROR");
         return;
       }
     //}#pragma endregion Partition
 
-    const size_t FLASH_START_ADDRESS = factory_part->address + factory_part->size; 
+    const size_t FLASH_START_ADDRESS = factory_part->address + factory_part->size;
 
     printf("%s: expected_checksum=%#010x\n", __func__, expected_checksum);
     printf("%s: checksum=%#010x\n", __func__, checksum);
@@ -1389,15 +1388,15 @@
     //{#pragma region Parts
       const size_t PARTS_MAX = 20;
       int parts_count = 0;
-      odroid_partition_t* parts = malloc(sizeof(odroid_partition_t) * PARTS_MAX);    
+      odroid_partition_t* parts = malloc(sizeof(odroid_partition_t) * PARTS_MAX);
 
       if (!parts)
       {
         sprintf(message, "%s: PARTITION MEMORY ERROR", __func__);
         firmware_debug(message);
-        firmware_status("PARTITION MEMORY ERROR");   
+        firmware_status("PARTITION MEMORY ERROR");
         return;
-      }    
+      }
     //}#pragma endregion Parts
 
     //{#pragma region Copy
@@ -1410,66 +1409,74 @@
         odroid_partition_t slot;
         count = fread(&slot, 1, sizeof(slot), file);
 
-        printf("\n-----------\nFirmware Details\nfile_size:%d\ncurren_flash_address:%d\nslot.length:%d\n(curren_flash_address+length) %d\nmax:%d\n-----------\n", 
+        printf("\n"
+               "\n------------"
+               "\nFirmware Details"
+               "\nfile_size:%d"
+               "\ncurren_flash_address:%d"
+               "\nslot.length:%d"
+               "\n(curren_flash_address+length) %d"
+               "\nmax:%d"
+               "\n------------\n",
           file_size,
           curren_flash_address,
-          slot.length, 
+          slot.length,
           (curren_flash_address+slot.length),
           (16 * 1024 * 1024)
-        );          
+        );
 
         //{#pragma region Errors
           if (count != sizeof(slot)) {
             sprintf(message, "%s: PARTITION READ ERROR", __func__);
             firmware_debug(message);
-            firmware_status("PARTITION READ ERROR");   
-            return;      
+            firmware_status("PARTITION READ ERROR");
+            return;
           }
 
           if (parts_count >= PARTS_MAX) {
             sprintf(message, "%s: PARTITION COUNT ERROR", __func__);
             firmware_debug(message);
-            firmware_status("PARTITION COUNT ERROR");   
+            firmware_status("PARTITION COUNT ERROR");
             return;
           }
 
           if (slot.type == 0xff) {
             sprintf(message, "%s: PARTITION TYPE ERROR", __func__);
             firmware_debug(message);
-            firmware_status("PARTITION TYPE ERROR");   
+            firmware_status("PARTITION TYPE ERROR");
             return;
           }
 
           if (curren_flash_address + slot.length > 16 * 1024 * 1024) {
             sprintf(message, "%s: PARTITION LENGTH ERROR", __func__);
             firmware_debug(message);
-            firmware_status("PARTITION LENGTH ERROR");   
+            firmware_status("PARTITION LENGTH ERROR");
             return;
           }
 
           if ((curren_flash_address & 0xffff0000) != curren_flash_address) {
             sprintf(message, "%s: PARTITION ALIGNMENT ERROR", __func__);
             firmware_debug(message);
-            firmware_status("PARTITION ALIGNMENT ERROR");   
+            firmware_status("PARTITION ALIGNMENT ERROR");
             return;
           }
         //}#pragma endregion Errors
 
         //{#pragma region Write
           uint32_t length;
-          count = fread(&length, 1, sizeof(length), file); 
-          
+          count = fread(&length, 1, sizeof(length), file);
+
           if (count != sizeof(length)) {
             sprintf(message, "%s: LENGTH READ ERROR", __func__);
             firmware_debug(message);
-            firmware_status("LENGTH READ ERROR");   
+            firmware_status("LENGTH READ ERROR");
             return;
-          }        
+          }
 
           if (length > slot.length) {
             sprintf(message, "%s: DATA LENGTH ERROR", __func__);
             firmware_debug(message);
-            firmware_status("DATA LENGTH ERROR");   
+            firmware_status("DATA LENGTH ERROR");
             return;
           }
 
@@ -1490,69 +1497,243 @@
               if (ret != ESP_OK) {
                 sprintf(message, "%s: ERASE ERROR", __func__);
                 firmware_debug(message);
-                firmware_status("ERASE ERROR");   
+                firmware_status("ERASE ERROR");
                 return;
-              }  
+              }
 
               int totalCount = 0;
+
+              sprintf(message, "Writing Partition [%d]", parts_count);
+              firmware_debug(message);
+
               for (int offset = 0; offset < length; offset += ERASE_BLOCK_SIZE) {
-                percentage = ((double)offset/(double)(length - ERASE_BLOCK_SIZE))*100;                                                                                   
+                percentage = ((double)offset/(double)(length - ERASE_BLOCK_SIZE))*100;
                 // sprintf(message, "Writing Part - %d %d", parts_count, (int)percentage);
-                sprintf(message, "Writing Partition [%d]", parts_count);
-                firmware_debug(message);
-                firmware_status(message);    
-                firmware_progress((int)percentage); 
+                firmware_status(message);
+                firmware_progress((int)percentage);
 
                 count = fread(data, 1, ERASE_BLOCK_SIZE, file);
                 if (count <= 0) {
                   sprintf(message, "%s: DATA READ ERROR", __func__);
                   firmware_debug(message);
-                  firmware_status("DATA READ ERROR");   
+                  firmware_status("DATA READ ERROR");
                   return;
                 }
 
                 if (offset + count >= length) {
                     count = length - offset;
-                }                               
-              }            
+                }
+
+                ret = spi_flash_write(curren_flash_address + offset, data, count);
+                if (ret != ESP_OK) {
+                  sprintf(message, "%s: WRITE ERROR", __func__);
+                  firmware_debug(message);
+                  firmware_status("WRITE ERROR");
+                }
+
+                totalCount += count;
+              }
+
+              if (totalCount != length)
+              {
+                  sprintf(message, "%s: DATA SIZE ERROR", __func__);
+                  firmware_debug(message);
+                  firmware_status("DATA SIZE ERROR");
+                  //printf("Size mismatch: lenght=%#08x, totalCount=%#08x\n", length, totalCount);
+              }
             }
-          //}#pragma endregion TX/RX   
+          //}#pragma endregion TX/RX
 
-        //}#pragma endregion Write            
+        parts[parts_count++] = slot;
+        curren_flash_address += slot.length;
+
+
+        // Seek to next entry
+        if (fseek(file, nextEntry, SEEK_SET) != 0)
+        {
+          sprintf(message, "%s: SEEK ERROR", __func__);
+          firmware_debug(message);
+          firmware_status("SEEK ERROR");
+        }
+        //}#pragma endregion Write
       }
-    //}#pragma endregion Copy      
+    //}#pragma endregion Copy
 
-    //sprintf(message, "%s: SUCCESS", __func__);
-    firmware_status("SUCCESS");
 
     close(file);
-    //free(data);
+
+    //{#pragma region Utils
+    //}#pragma enregion Utils
+
+    //{#pragma region Partition
+      firmware_partition(parts, parts_count);
+      free(data);
+      odroid_sdcard_close();
+    //}#pragma enregion Partition
+
+    //{#pragma region Boot
+      firmware_boot();
+    //}#pragma enregion Boot
+  }
 
 
-    /*
-    set_restore_states();
+  #define ESP_PARTITION_TABLE_OFFSET CONFIG_PARTITION_TABLE_OFFSET /* Offset of partition table. Backwards-compatible name.*/
+  #define ESP_PARTITION_TABLE_MAX_LEN 0xC00 /* Maximum length of partition table data */
+  #define ESP_PARTITION_TABLE_MAX_ENTRIES (ESP_PARTITION_TABLE_MAX_LEN / sizeof(esp_partition_info_t)) /* Maximum length of partition table data, including terminating entry */
 
-    draw_background();
-    char *message = "loading...";
+  #define PART_TYPE_APP 0x00
+  #define PART_SUBTYPE_FACTORY 0x00
 
-    int h = 5;
-    int w = strlen(message)*h;
-    int x = (SCREEN.w/2)-(w/2);
-    int y = (SCREEN.h/2)-(h/2);
-    draw_text(x,y,message,false,false);
-    y+=10;
-    for(int n = 0; n < (w+10); n++) {
-      for(int i = 0; i < 5; i++) {
-        buffer[i] = GUI.fg;
-      }
-      ili9341_write_frame_rectangleLE(x+n, y, 1, 5, buffer);
-      usleep(15000);
+  void firmware_partition(odroid_partition_t* parts, size_t parts_count) {
+
+    const char message[100];
+
+    int x = ORIGIN.x+32;
+    int y = SCREEN.h-16;
+    int w = SCREEN.w-32;
+    int h = 16;
+
+    esp_err_t err;
+
+    // Read table
+    const esp_partition_info_t* partition_data = (const esp_partition_info_t*)malloc(ESP_PARTITION_TABLE_MAX_LEN);
+    if (!partition_data)
+    {
+      sprintf(message, "%s: TABLE MEMORY  ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("TABLE MEMORY  ERROR");
     }
 
-    //odroid_system_application_set(PROGRAMS[STEP-1]);
-    usleep(10000);
+    err = spi_flash_read(ESP_PARTITION_TABLE_OFFSET, (void*)partition_data, ESP_PARTITION_TABLE_MAX_LEN);
+    if (err != ESP_OK)
+    {
+      sprintf(message, "%s: TABLE READ ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("TABLE READ ERROR");
+    }
+
+    // Find end of first partitioned
+    int startTableEntry = -1;
+    size_t startFlashAddress = 0xffffffff;
+
+    for (int i = 0; i < ESP_PARTITION_TABLE_MAX_ENTRIES; ++i)
+    {
+        const esp_partition_info_t *part = &partition_data[i];
+        if (part->magic == 0xffff) break;
+
+        if (part->magic == ESP_PARTITION_MAGIC)
+        {
+            if (part->type == PART_TYPE_APP &&
+                part->subtype == PART_SUBTYPE_FACTORY)
+            {
+                startTableEntry = i + 1;
+                startFlashAddress = part->pos.offset + part->pos.size;
+                break;
+            }
+        }
+    }
+
+    if (startTableEntry < 0)
+    {
+      sprintf(message, "%s: NO FACTORY PARTITION ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("NO FACTORY PARTITION ERROR");
+    }
+
+    //printf("%s: startTableEntry=%d, startFlashAddress=%#08x\n",__func__, startTableEntry, startFlashAddress);
+
+    // blank partition table entries
+    for (int i = startTableEntry; i < ESP_PARTITION_TABLE_MAX_ENTRIES; ++i)
+    {
+        memset(&partition_data[i], 0xff, sizeof(esp_partition_info_t));
+    }
+
+    // Add partitions
+    size_t offset = 0;
+    for (int i = 0; i < parts_count; ++i)
+    {
+        esp_partition_info_t* part = &partition_data[startTableEntry + i];
+        part->magic = ESP_PARTITION_MAGIC;
+        part->type = parts[i].type;
+        part->subtype = parts[i].subtype;
+        part->pos.offset = startFlashAddress + offset;
+        part->pos.size = parts[i].length;
+        for (int j = 0; j < 16; ++j)
+        {
+            part->label[j] = parts[i].label[j];
+        }
+        part->flags = parts[i].flags;
+
+        offset += parts[i].length;
+    }
+
+    //abort();
+
+    // Erase partition table
+    if (ESP_PARTITION_TABLE_MAX_LEN > 4096)
+    {
+      sprintf(message, "%s: TABLE SIZE ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("TABLE SIZE ERROR");
+    }
+
+    err = spi_flash_erase_range(ESP_PARTITION_TABLE_OFFSET, 4096);
+    if (err != ESP_OK)
+    {
+      sprintf(message, "%s: TABLE ERASE ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("TABLE ERASE ERROR");
+    }
+
+    // Write new table
+    err = spi_flash_write(ESP_PARTITION_TABLE_OFFSET, (void*)partition_data, ESP_PARTITION_TABLE_MAX_LEN);
+    if (err != ESP_OK)
+    {
+      sprintf(message, "%s: TABLE WRITE ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("TABLE WRITE ERROR");
+    }
+
+    esp_partition_reload_table();
+
+    sprintf(message, "%s: SUCCESS", __func__);
+    firmware_debug(message);
+  }
+
+  void firmware_boot() {
+    const char message[100];
+
+    int x = ORIGIN.x+32;
+    int y = SCREEN.h-16;
+    int w = SCREEN.w-32;
+    int h = 16;
+
+    sprintf(message, "%s: BOOTING APPLICATION", __func__);
+    firmware_debug(message);
+    firmware_status("BOOTING APPLICATION");
+
+    // Set firmware active
+    const esp_partition_t* partition = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_APP_OTA_0, NULL);
+    if (partition == NULL)
+    {
+      sprintf(message, "%s: NO BOOT PART ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("NO BOOT PART ERROR");
+    }
+
+    esp_err_t err = esp_ota_set_boot_partition(partition);
+    if (err != ESP_OK)
+    {
+      sprintf(message, "%s: BOOT SET ERROR", __func__);
+      firmware_debug(message);
+      firmware_status("BOOT SET ERROR");
+    }
+
+    sprintf(message, "%s: SUCCESS", __func__);
+    firmware_debug(message);
+
+    // reboot
     esp_restart();
-    */
   }
 
   void firmware_delete() {
@@ -1619,16 +1800,24 @@
       */
       if(gamepad.values[ODROID_INPUT_LEFT]) {
         if(!LAUNCHER && !FOLDER) {
-          if(SETTING != 2 && SETTING != 3) {
+          if(!SETTINGS && SETTING != 1 && SETTING != 2 && SETTING != 3) {
             STEP--;
             if( STEP < 0 ) {
-              STEP = 0;
-            } else {
-              ROMS.offset = 0;
-              ROMS.total = 0;
-              animate(-1);                    
+              STEP = COUNT - 1;
             }
+
+            ROMS.offset = 0;
+            animate(-1);
           } else {
+            if(SETTING == 1) {
+              nvs_handle handle;
+              nvs_open("storage", NVS_READWRITE, &handle);
+              nvs_set_i8(handle, "COLOR", 0);
+              nvs_commit(handle);
+              nvs_close(handle);
+              draw_toggle();
+              draw_systems();
+            }
             if(SETTING == 2) {
               if(VOLUME > 0) {
                 VOLUME--;
@@ -1653,16 +1842,23 @@
       */
       if(gamepad.values[ODROID_INPUT_RIGHT]) {
         if(!LAUNCHER && !FOLDER) {
-          if(SETTING != 2 && SETTING != 3) {
+          if(!SETTINGS && SETTING != 1 && SETTING != 2 && SETTING != 3) {
             STEP++;
             if( STEP > COUNT-1 ) {
-              STEP = COUNT-1;
-            } else {
-              ROMS.offset = 0;
-              ROMS.total = 0;
-              animate(1);                      
+              STEP = 0;
             }
+            ROMS.offset = 0;
+            animate(1);
           } else {
+            if(SETTING == 1) {
+              nvs_handle handle;
+              nvs_open("storage", NVS_READWRITE, &handle);
+              nvs_set_i8(handle, "COLOR", 1);
+              nvs_commit(handle);
+              nvs_close(handle);
+              draw_toggle();
+              draw_systems();
+            }
             if(SETTING == 2) {
               if(VOLUME < 4) {
                 VOLUME++;
