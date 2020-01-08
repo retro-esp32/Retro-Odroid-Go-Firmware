@@ -11,6 +11,7 @@ You can build from source.
 > Here it is!
 
 ![Preview](https://j.gifs.com/nxlB6E.gif)
+<img alt="Preview" src="https://j.gifs.com/nxlB6E.gif">
 
 ## Have your say!
 > Don't be shy, our team is here
