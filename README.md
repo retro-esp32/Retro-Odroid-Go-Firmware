@@ -10,7 +10,7 @@ You can build from source.
 ## Preview
 > Here it is!
 
-![Preview](https://j.gifs.com/nxlB6E.gif)
+![Preview](Assets/preview.gif)
 
 ## Have your say!
 > Don't be shy, our team is here
