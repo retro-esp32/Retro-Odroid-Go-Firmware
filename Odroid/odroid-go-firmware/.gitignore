@@ -1,0 +1,5 @@
+build/
+sdkconfig.old
+firmware.fw
+*.gch
+

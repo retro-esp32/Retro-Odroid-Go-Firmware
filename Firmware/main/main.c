@@ -15,7 +15,7 @@
   bool RESTART = false;
   bool LAUNCHER = false;
   bool FOLDER = false;
-  bool SPLASH = false;
+  bool SPLASH = true;
   bool SETTINGS = false;
 
   int8_t STEP = 0;
@@ -1400,7 +1400,7 @@
     //}#pragma endregion Parts
 
     //{#pragma region Copy
-      size_t curren_flash_address = FLASH_START_ADDRESS;
+      size_t address = FLASH_START_ADDRESS;
 
       while(true) {
         if (ftell(file) >= (file_size - sizeof(checksum))) {
@@ -1413,15 +1413,15 @@
                "\n------------"
                "\nFirmware Details"
                "\nfile_size:%d"
-               "\ncurren_flash_address:%d"
+               "\naddress:%d"
                "\nslot.length:%d"
-               "\n(curren_flash_address+length) %d"
+               "\n(address+length) %d"
                "\nmax:%d"
                "\n------------\n",
           file_size,
-          curren_flash_address,
+          address,
           slot.length,
-          (curren_flash_address+slot.length),
+          (address+slot.length),
           (16 * 1024 * 1024)
         );
 
@@ -1447,14 +1447,14 @@
             return;
           }
 
-          if (curren_flash_address + slot.length > 16 * 1024 * 1024) {
+          if (address + slot.length > 16 * 1024 * 1024) {
             sprintf(message, "%s: PARTITION LENGTH ERROR", __func__);
             firmware_debug(message);
             firmware_status("PARTITION LENGTH ERROR");
             return;
           }
 
-          if ((curren_flash_address & 0xffff0000) != curren_flash_address) {
+          if ((address & 0xffff0000) != address) {
             sprintf(message, "%s: PARTITION ALIGNMENT ERROR", __func__);
             firmware_debug(message);
             firmware_status("PARTITION ALIGNMENT ERROR");
@@ -1492,7 +1492,7 @@
               firmware_status(message);
               firmware_progress(0);
 
-              esp_err_t ret = spi_flash_erase_range(curren_flash_address, eraseBlocks * ERASE_BLOCK_SIZE);
+              esp_err_t ret = spi_flash_erase_range(address, eraseBlocks * ERASE_BLOCK_SIZE);
 
               if (ret != ESP_OK) {
                 sprintf(message, "%s: ERASE ERROR", __func__);
@@ -1524,7 +1524,7 @@
                     count = length - offset;
                 }
 
-                ret = spi_flash_write(curren_flash_address + offset, data, count);
+                ret = spi_flash_write(address + offset, data, count);
                 if (ret != ESP_OK) {
                   sprintf(message, "%s: WRITE ERROR", __func__);
                   firmware_debug(message);
@@ -1545,7 +1545,7 @@
           //}#pragma endregion TX/RX
 
         parts[parts_count++] = slot;
-        curren_flash_address += slot.length;
+        address += slot.length;
 
 
         // Seek to next entry
