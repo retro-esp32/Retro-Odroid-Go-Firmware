@@ -9,6 +9,7 @@ You can build from source.
 
 ## Preview
 > Here it is!
+
 ![Preview](Assets/preview.gif)
 
 ## Have your say!
