@@ -9,6 +9,7 @@ You can build from source.
 
 ## Preview
 > Here it is!
+
 ![Preview](https://j.gifs.com/nxlB6E.gif)
 
 ## Have your say!
