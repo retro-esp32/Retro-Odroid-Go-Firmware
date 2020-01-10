@@ -1096,7 +1096,7 @@ END GROUP
  *(.jcr)
                 0x000000003fff001c                _data_end = ABSOLUTE (.)
 
-.dram0.rodata   0x000000003fff001c     0x1bb0
+.dram0.rodata   0x000000003fff001c     0x1bb4
                 0x000000003fff001c                _rodata_start = ABSOLUTE (.)
  *(.rodata)
  .rodata        0x000000003fff001c       0x14 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
@@ -1112,92 +1112,91 @@ END GROUP
  .rodata.CSWTCH$18
                 0x000000003fff0530        0xc /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_flash.o)
  .rodata.str1.1
-                0x000000003fff053c      0x431 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
-                                        0x436 (size before relaxing)
+                0x000000003fff053c      0x437 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
+                                        0x43c (size before relaxing)
  .rodata.CSWTCH$38
-                0x000000003fff096d        0x5 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
- *fill*         0x000000003fff0972        0x2 
+                0x000000003fff0973        0x5 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
  .rodata.CSWTCH$25
-                0x000000003fff0974       0x14 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
+                0x000000003fff0978       0x14 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
  .rodata.CSWTCH$24
-                0x000000003fff0988       0x40 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
+                0x000000003fff098c       0x40 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
  .rodata.__func__$4451
-                0x000000003fff09c8       0x10 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
+                0x000000003fff09cc       0x10 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_init.o)
  .rodata.str1.1
-                0x000000003fff09d8       0x7e /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_random.o)
+                0x000000003fff09dc       0x7e /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_random.o)
  .rodata.__func__$2290
-                0x000000003fff0a56       0x17 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_random.o)
+                0x000000003fff0a5a       0x17 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_random.o)
  .rodata.str1.1
-                0x000000003fff0a6d       0xd0 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
+                0x000000003fff0a71       0xd0 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
  .rodata.padding$3889
-                0x000000003fff0b3d       0x40 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
+                0x000000003fff0b41       0x40 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
  .rodata.__func__$3885
-                0x000000003fff0b7d       0x19 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
+                0x000000003fff0b81       0x19 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
  .rodata.__func__$3865
-                0x000000003fff0b96       0x17 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
+                0x000000003fff0b9a       0x17 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_sha.o)
  .rodata.str1.1
-                0x000000003fff0bad      0x50e /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_utility.o)
+                0x000000003fff0bb1      0x50e /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_utility.o)
                                         0x585 (size before relaxing)
  .rodata.str1.1
-                0x000000003fff10bb      0x41f /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(esp_image_format.o)
+                0x000000003fff10bf      0x41f /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(esp_image_format.o)
                                         0x45a (size before relaxing)
  .rodata.str1.1
-                0x000000003fff14da      0x15c /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_partitions.o)
+                0x000000003fff14de      0x15c /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_partitions.o)
  .rodata.str1.1
-                0x000000003fff1636       0xd9 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_qio_mode.o)
+                0x000000003fff163a       0xd9 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_qio_mode.o)
  .rodata.chip_data
-                0x000000003fff170f       0x6c /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_qio_mode.o)
- *fill*         0x000000003fff177b        0x1 
+                0x000000003fff1713       0x6c /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_qio_mode.o)
+ *fill*         0x000000003fff177f        0x1 
  .rodata.CSWTCH$38
-                0x000000003fff177c       0x18 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/spi_flash/libspi_flash.a(spi_flash_rom_patch.o)
+                0x000000003fff1780       0x18 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/spi_flash/libspi_flash.a(spi_flash_rom_patch.o)
  .rodata.GPIO_PIN_MUX_REG
-                0x000000003fff1794       0xa0 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/soc/libsoc.a(gpio_periph.o)
-                0x000000003fff1794                GPIO_PIN_MUX_REG
+                0x000000003fff1798       0xa0 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/soc/libsoc.a(gpio_periph.o)
+                0x000000003fff1798                GPIO_PIN_MUX_REG
  .rodata.str1.1
-                0x000000003fff1834       0xa0 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/soc/libsoc.a(rtc_clk.o)
+                0x000000003fff1838       0xa0 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/soc/libsoc.a(rtc_clk.o)
  .rodata.str1.1
-                0x000000003fff18d4      0x1bc /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
+                0x000000003fff18d8      0x1bc /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
  .rodata.rtc_clk_xtal_freq_estimate
-                0x000000003fff1a90       0x64 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
+                0x000000003fff1a94       0x64 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
  .rodata.str1.1
-                0x000000003fff1af4       0xc2 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
+                0x000000003fff1af8       0xc2 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
  .rodata.__func__$1848
-                0x000000003fff1bb6       0x15 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
+                0x000000003fff1bba       0x15 /Users/andrueu/Desktop/github/R32/Odroid/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
  *(.gnu.linkonce.r.*)
  *(.rodata1)
-                0x000000003fff1bcb                __XT_EXCEPTION_TABLE_ = ABSOLUTE (.)
+                0x000000003fff1bcf                __XT_EXCEPTION_TABLE_ = ABSOLUTE (.)
  *(.xt_except_table)
  *(.gcc_except_table)
  *(.gnu.linkonce.e.*)
  *(.gnu.version_r)
  *(.eh_frame)
-                0x000000003fff1bcc                . = ((. + 0x3) & 0xfffffffffffffffc)
- *fill*         0x000000003fff1bcb        0x1 
-                0x000000003fff1bcc                __init_array_start = ABSOLUTE (.)
+                0x000000003fff1bd0                . = ((. + 0x3) & 0xfffffffffffffffc)
+ *fill*         0x000000003fff1bcf        0x1 
+                0x000000003fff1bd0                __init_array_start = ABSOLUTE (.)
  *crtbegin.*(.ctors)
  *(EXCLUDE_FILE(*crtend.*) .ctors)
  *(SORT(.ctors.*))
  *(.ctors)
-                0x000000003fff1bcc                __init_array_end = ABSOLUTE (.)
+                0x000000003fff1bd0                __init_array_end = ABSOLUTE (.)
  *crtbegin.*(.dtors)
  *(EXCLUDE_FILE(*crtend.*) .dtors)
  *(SORT(.dtors.*))
  *(.dtors)
-                0x000000003fff1bcc                __XT_EXCEPTION_DESCS_ = ABSOLUTE (.)
+                0x000000003fff1bd0                __XT_EXCEPTION_DESCS_ = ABSOLUTE (.)
  *(.xt_except_desc)
  *(.gnu.linkonce.h.*)
-                0x000000003fff1bcc                __XT_EXCEPTION_DESCS_END__ = ABSOLUTE (.)
+                0x000000003fff1bd0                __XT_EXCEPTION_DESCS_END__ = ABSOLUTE (.)
  *(.xt_except_desc_end)
  *(.dynamic)
  *(.gnu.version_d)
-                0x000000003fff1bcc                _rodata_end = ABSOLUTE (.)
-                0x000000003fff1bcc                _lit4_start = ABSOLUTE (.)
+                0x000000003fff1bd0                _rodata_end = ABSOLUTE (.)
+                0x000000003fff1bd0                _lit4_start = ABSOLUTE (.)
  *(*.lit4)
  *(.lit4.*)
  *(.gnu.linkonce.lit4.*)
-                0x000000003fff1bcc                _lit4_end = ABSOLUTE (.)
-                0x000000003fff1bcc                . = ALIGN (0x4)
-                0x000000003fff1bcc                _heap_start = ABSOLUTE (.)
+                0x000000003fff1bd0                _lit4_end = ABSOLUTE (.)
+                0x000000003fff1bd0                . = ALIGN (0x4)
+                0x000000003fff1bd0                _heap_start = ABSOLUTE (.)
                 [!provide]                        PROVIDE (Add2SelfBigHex256, 0x40015b7c)
                 [!provide]                        PROVIDE (AddBigHex256, 0x40015b28)
                 [!provide]                        PROVIDE (AddBigHexModP256, 0x40015c98)
