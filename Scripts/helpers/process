@@ -1,0 +1,92 @@
+#!/bin/bash
+
+BUILD_PATH="$REPO/Build"
+FIRMWARE_PATH="$REPO/Firmware"
+MKFW_PATH="$REPO/Odroid/odroid-go-firmware/tools/mkfw"
+LAUNCHER_PATH=""
+LAUNCHER=""
+BIN=""
+TILE=""
+NAME=""
+
+# set_config_option
+set_config_option() {
+  clear
+  CONFIG="n"
+  OPTION="${memo}  Would you like to run ${magenta}'make menuconfig'? ${nc}[y/${bold}N${nc}]"
+  echo "--------------------------------------------------------------------------"
+  echo -e "${OPTION}"
+  echo "--------------------------------------------------------------------------"
+  read -n 1 -r response
+  if [[ "$response" = "y" ]]
+  then
+    CONFIG="y"
+  fi
+  clear
+}
+
+# get_config_option
+get_config_option() {
+  if [[ "$CONFIG" = "y" ]]
+  then
+    make menuconfig
+  fi
+}
+
+# set_clean_option
+set_clean_option() {
+  clear
+  CLEAN="n"
+  OPTION="${bomb}  Would you like to run ${magenta}'make clean'? ${nc}[y/${bold}N${nc}]"
+  echo "--------------------------------------------------------------------------"
+  echo -e "${OPTION}"
+  echo "--------------------------------------------------------------------------"
+  read -n 1 -r response
+  if [[ "$response" = "y" ]]
+  then
+    CLEAN="y"
+  fi
+  clear
+}
+
+# get_clean_option
+get_clean_option() {
+  if [[ "$CLEAN" = "y" ]]
+  then
+    make clean
+  fi
+}
+
+echo "--------------------------------------------------------------------------"
+echo -e "${wrench}  ${red}Recompile ${cyan}Firmware? ${nc}[y/${bold}N${nc}]"
+echo "--------------------------------------------------------------------------"
+read -n 1 -r response
+if [[ "$response" = "y" ]]
+then
+  set_clean_option
+  set_config_option
+
+  echo "--------------------------------------------------------------------------"
+  echo -e "${wrench}  ${green}Compiling ${cyan}Firmware${nc}"
+  echo "--------------------------------------------------------------------------"
+
+  rm $BUILD_PATH/Bins/ota_data_initial.bin
+  rm $BUILD_PATH/Bins/bootloader.bin
+  rm $BUILD_PATH/Bins/partitions.bin
+  rm $BUILD_PATH/Bins/phy_init_data.bin
+  rm $BUILD_PATH/Bins/Retro-Odroid-Go.bin
+
+  cd $FIRMWARE_PATH
+
+  get_clean_option
+  get_config_option
+  make -j8
+  cp ./build/ota_data_initial.bin $BUILD_PATH/Bins/  
+  cp ./build/bootloader/bootloader.bin $BUILD_PATH/Bins/
+  cp ./build/partitions.bin $BUILD_PATH/Bins/
+  cp ./build/phy_init_data.bin $BUILD_PATH/Bins/
+  cp ./build/Retro-Odroid-Go.bin $BUILD_PATH/Bins/
+fi
+clear
+
+cd $SRC_PATH

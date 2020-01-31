@@ -17,6 +17,7 @@
   bool FOLDER = false;
   bool SPLASH = true;
   bool SETTINGS = false;
+  bool SD = false;
 
   int8_t STEP = 0;
   int OPTION = 0;
@@ -91,7 +92,9 @@
     odroid_input_battery_level_init();
 
     // SD
-    odroid_sdcard_open("/sd");
+    //odroid_sdcard_open("/sd");
+    esp_err_t r = odroid_sdcard_open("/sd");
+    SD = r != ESP_OK ? false : true;
 
     // Theme
     get_theme();
@@ -508,10 +511,10 @@
       case ESP_OK:
         break;
       case ESP_ERR_NVS_NOT_FOUND:
-        USER = 0;
+        USER = 20;
         break;
       default :
-        USER = 0;
+        USER = 20;
     }
     nvs_close(handle);
   }
@@ -900,55 +903,68 @@
   //}#pragma endregion Sort
 
   void get_files() {
-    free(FILES);
-    FILES = (char**)malloc(MAX_FILES * sizeof(void*));
-    ROMS.total = 0;
+    if(SD) {
 
-    char path[256] = "/sd/odroid/";
-    strcat(&path[strlen(path) - 1], DIRECTORIES[STEP]);
-    strcat(&path[strlen(path) - 1],folder_path);
-    printf("\npath:%s\n", path);
+      free(FILES);
+      FILES = (char**)malloc(MAX_FILES * sizeof(void*));
+      ROMS.total = 0;
 
-    strcpy(ROM.path, path);
+      char path[256] = "/sd/odroid/";
+      strcat(&path[strlen(path) - 1], DIRECTORIES[STEP]);
+      strcat(&path[strlen(path) - 1],folder_path);
+      printf("\npath:%s\n", path);
 
-    DIR *directory = opendir(path);
+      strcpy(ROM.path, path);
 
-    if(directory == NULL) {
-      char message[100] = "no firmware available";
-      int center = ceil((320/2)-((strlen(message)*5)/2));
-      draw_text(center,134,message,false,false);
-    } else {
-      struct dirent *file;
-      while ((file = readdir(directory)) != NULL) {
-        int firmware_length = strlen(file->d_name);
-        int ext_lext = strlen(EXTENSIONS[STEP]);
-        bool extenstion = strcmp(&file->d_name[firmware_length - ext_lext], EXTENSIONS[STEP]) == 0 && file->d_name[0] != '.';
-        if(extenstion || (file->d_type == 2)) {
-          if(ROMS.total >= MAX_FILES) { break; }
-          size_t len = strlen(file->d_name);
-          FILES[ROMS.total] = (file->d_type == 2) ? (char*)malloc(len + 5) : (char*)malloc(len + 1);
-          if((file->d_type == 2)) {
-            char dir[256];
-            strcpy(dir, file->d_name);
-            char dd[8];
-            sprintf(dd, "%s", ext_lext == 2 ? "dir" : ".dir");
-            strcat(&dir[strlen(dir) - 1], dd);
-            strcpy(FILES[ROMS.total], dir);
-          } else {
-            strcpy(FILES[ROMS.total], file->d_name);
+      DIR *directory = opendir(path);
+
+      if(directory == NULL) {
+        char message[100] = "no firmware available";
+        int center = ceil((320/2)-((strlen(message)*5)/2));
+        draw_text(center,134,message,false,false);
+      } else {
+        struct dirent *file;
+        while ((file = readdir(directory)) != NULL) {
+          int firmware_length = strlen(file->d_name);
+          int ext_lext = strlen(EXTENSIONS[STEP]);
+          bool extenstion = strcmp(&file->d_name[firmware_length - ext_lext], EXTENSIONS[STEP]) == 0 && file->d_name[0] != '.';
+          if(extenstion || (file->d_type == 2)) {
+            if(ROMS.total >= MAX_FILES) { break; }
+            size_t len = strlen(file->d_name);
+            FILES[ROMS.total] = (file->d_type == 2) ? (char*)malloc(len + 5) : (char*)malloc(len + 1);
+            if((file->d_type == 2)) {
+              char dir[256];
+              strcpy(dir, file->d_name);
+              char dd[8];
+              sprintf(dd, "%s", ext_lext == 2 ? "dir" : ".dir");
+              strcat(&dir[strlen(dir) - 1], dd);
+              strcpy(FILES[ROMS.total], dir);
+            } else {
+              strcpy(FILES[ROMS.total], file->d_name);
+            }
+            ROMS.total++;
           }
-          ROMS.total++;
         }
-      }
-      ROMS.pages = ROMS.total/ROMS.limit;
-      if(ROMS.offset > ROMS.total) { ROMS.offset = 0;}
+        ROMS.pages = ROMS.total/ROMS.limit;
+        if(ROMS.offset > ROMS.total) { ROMS.offset = 0;}
 
-      closedir(directory);
-      if(ROMS.total < 500) sort_files(FILES);
-      draw_files();
+        closedir(directory);
+        if(ROMS.total < 500) sort_files(FILES);
+        draw_files();
 
-      //free(FILES);
+        //free(FILES);
+      }              
+
+    } else {
+      char message[100] = "insert sd card";
+      int center = ceil((320/2)-((strlen(message)*5)/2));
+      draw_text(center,134,message,false,false);    
+
+      sprintf(message, "[press a to restart]");
+      center = ceil((320/2)-((strlen(message)*5)/2));
+      draw_text(center,225,message,false,false);    
     }
+    
   }
 
   void draw_files() {
@@ -1036,6 +1052,7 @@
     draw_text(16,16,FEATURES[STEP], false, true);
     STEP == 0 ? draw_settings() : get_files();
     clean_up();
+    draw_systems();
   }
 
   void restore_layout() {
@@ -1074,16 +1091,20 @@
     STEP == 0 ? draw_settings() : get_files();
   }
 
-  void clean_up() {
-    int MAX = 736;
+  void clean_up() {             
+    int MAX = 304; //256
+    printf("\n%s", __func__);
     for(int n = 0; n < COUNT; n++) {
-      if(SYSTEMS[n].x > 512) {
+      if(SYSTEMS[n].x >= 320) {
         SYSTEMS[n].x -= MAX;
+        printf("<-- HERE");
       }
-      if(SYSTEMS[n].x <= -272) {
+      if(SYSTEMS[n].x <= -32) {
         SYSTEMS[n].x += MAX;
       }
+      printf("\nn:%d x:%d", n, SYSTEMS[n].x);
     }
+    printf("\nend %s", __func__);
   }
 //}#pragma endregion Animations
 
@@ -1752,36 +1773,6 @@
       ili9341_write_frame_rectangleLE(center+n, y, 1, 5, buffer);
       usleep(15000);
     }
-
-    /*
-    DIR *directory;
-    struct dirent *file;
-    char path[256] = "/sd/odroid/firmware/";
-    strcat(&path[strlen(path) - 1], DIRECTORIES[STEP]);
-    directory = opendir(path);
-    gets(ROM.name);
-    while ((file = readdir(directory)) != NULL) {
-      char tmp[256] = "";
-      char file_to_delete[256] = "";
-      strcat(tmp, file->d_name);
-      sprintf(file_to_delete, "%s/%s", path, file->d_name);
-      tmp[strlen(tmp)-4] = '\0';
-      gets(tmp);
-      if(strcmp(ROM.name, tmp) == 0) {
-        //printf("\nDIRECTORIES[STEP]:%s ROM.name:%s tmp:%s",DIRECTORIES[STEP], ROM.name, tmp);
-        struct stat st;
-        if (stat(file_to_delete, &st) == 0) {
-          unlink(file_to_delete);
-          LAUNCHER = false;
-          draw_background();
-          draw_systems();
-          draw_text(16,16,FEATURES[STEP],false,true);
-          STEP == 0 ? draw_themes() : get_files();
-        }
-      }
-    }
-    */
-    //closedir(path);
   }
 //}#pragma endregion Firmware Options
 
@@ -2008,7 +1999,7 @@
             }
           }
         } else {
-          if (ROM.ready && !LAUNCHER) {
+          if (ROM.ready && !LAUNCHER ) {
             OPTION = 0;
             char file_to_load[256] = "";
             sprintf(file_to_load, "%s/%s", ROM.path, ROM.name);
@@ -2032,14 +2023,18 @@
               draw_launcher();
             }
           } else {
-            switch(OPTION) {
-              case 0:
-              case 1:
-                firmware_run(true);
-              break;
-              case 2:
-                firmware_delete();
-              break;
+            if(SD) {
+              switch(OPTION) {
+                case 0:
+                case 1:
+                  firmware_run(true);
+                break;
+                case 2:
+                  firmware_delete();
+                break;
+              }            
+            } else {
+              esp_restart();                      
             }
           }
         }

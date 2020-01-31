@@ -1,0 +1,60 @@
+#!/bin/bash
+
+SRC_PATH=`pwd`
+REPO=$(dirname $PWD)
+
+#---------------------------------
+# Styles
+#---------------------------------
+source helpers/styles
+
+#---------------------------------
+# Paths
+#---------------------------------
+source helpers/paths
+
+#---------------------------------
+# PROCESS
+#---------------------------------
+source helpers/process
+
+#---------------------------------
+# PORT
+#---------------------------------
+source helpers/ports
+
+#---------------------------------
+# BAUD
+#---------------------------------
+source helpers/bauds
+
+#---------------------------------
+# Eraser
+#---------------------------------
+source helpers/eraser
+
+
+clear
+echo "--------------------------------------------------------------------------"
+echo -e "${game}  ${green}Flashing Device ${nc} - Hang Tight"
+echo "--------------------------------------------------------------------------"
+
+esptool.py \
+--chip esp32 \
+--port ${PORT} \
+--baud ${BAUD} \
+--before default_reset \
+--after hard_reset write_flash -z \
+--flash_mode dio \
+--flash_freq 80m \
+--flash_size detect \
+0xd000 $BUILD_PATH/Bins/ota_data_initial.bin \
+0x1000 $BUILD_PATH/Bins/bootloader.bin \
+0xf000 $BUILD_PATH/Bins/phy_init_data.bin \
+0x8000 $BUILD_PATH/Bins/partitions.bin \
+0x10000 $BUILD_PATH/Bins/Retro-Odroid-Go.bin
+
+#---------------------------------
+# Goodbye
+#---------------------------------
+source helpers/goodbye

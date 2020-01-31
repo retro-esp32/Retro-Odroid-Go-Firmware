@@ -3,7 +3,7 @@
 SRC_PATH=`pwd`
 REPO=$(dirname $PWD)
 MKFW_PATH="$REPO/Odroid/odroid-go-firmware/tools/mkimg"
-BINS="../Firmware/build"
+BUILD_PATH="../Build"
 NAME="Retro-Odroid-Go.img"
 
 #---------------------------------
@@ -23,13 +23,13 @@ echo -e "${disk} ${green}Creating ${cyan}${NAME}${nc} Image"
 echo "--------------------------------------------------------------------------"
 
 $MKFW_PATH/mkimg "${NAME}" \
-0xd000 $BINS/ota_data_initial.bin \
-0x1000 $BINS/bootloader/bootloader.bin \
-0xf000 $BINS/phy_init_data.bin \
-0x10000 $BINS/Retro-Odroid-Go.bin \
-0x8000 $BINS/partitions.bin
+0xd000 $BUILD_PATH/Bins/ota_data_initial.bin \
+0x1000 $BUILD_PATH/Bins/bootloader.bin \
+0xf000 $BUILD_PATH/Bins/phy_init_data.bin \
+0x8000 $BUILD_PATH/Bins/partitions.bin \
+0x10000 $BUILD_PATH/Bins/Retro-Odroid-Go.bin
 
-mv "${NAME}" "$REPO/Release/${NAME}"
+mv "${NAME}" "$BUILD_PATH/Image/${NAME}"
 
 #---------------------------------
 # Goodbye
