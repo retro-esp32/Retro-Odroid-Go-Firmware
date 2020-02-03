@@ -75,6 +75,8 @@
     nvs_flash_init();
     odroid_system_init();
 
+    odroid_audio_init(16000);
+
     VOLUME = odroid_settings_Volume_get();
     odroid_settings_Volume_set(VOLUME);
 
@@ -512,9 +514,11 @@
         break;
       case ESP_ERR_NVS_NOT_FOUND:
         USER = 20;
+        set_theme(USER);
         break;
       default :
         USER = 20;
+        set_theme(USER);
     }
     nvs_close(handle);
   }
