@@ -81,7 +81,7 @@ then
   get_clean_option
   get_config_option
   make -j8
-  cp ./build/ota_data_initial.bin $BUILD_PATH/Bins/  
+  cp ./build/ota_data_initial.bin $BUILD_PATH/Bins/
   cp ./build/bootloader/bootloader.bin $BUILD_PATH/Bins/
   cp ./build/partitions.bin $BUILD_PATH/Bins/
   cp ./build/phy_init_data.bin $BUILD_PATH/Bins/
