@@ -98,7 +98,7 @@ static void ui_draw_image(short x, short y, short width, short height, uint16_t*
 // TODO: default bad image tile
 void ui_firmware_image_get(const char* filename, uint16_t* outData)
 {
-    //printf("%s: filename='%s'\n", __func__, filename);
+    printf("%s: filename='%s'\n", __func__, filename);
     const uint8_t DEFAULT_DATA = 0xff;
 
     FILE* file = fopen(filename, "rb");
@@ -646,6 +646,13 @@ void flash_firmware(const char* fullPath)
             indicate_error();
         }
 
+        printf("\n-----------\nFirmware Details\nfile_size:%d\ncurren_flash_address:%d\nslot.length:%d\n(curren_flash_address+length) %d\nmax:%d\n-----------\n", 
+            file_size,
+            curren_flash_address,
+            slot.length, 
+            (curren_flash_address+slot.length),
+            (16 * 1024 * 1024)
+        );     
         if (curren_flash_address + slot.length > 16 * 1024 * 1024)
         {
             DisplayError("PARTITION LENGTH ERROR");
@@ -657,7 +664,6 @@ void flash_firmware(const char* fullPath)
             DisplayError("PARTITION LENGTH ALIGNMENT ERROR");
             indicate_error();
         }
-
 
         // Data Length
         uint32_t length;
@@ -734,7 +740,6 @@ void flash_firmware(const char* fullPath)
                     count = length - offset;
                 }
 
-
                 // flash
                 //printf("Writing offset=0x%x\n", offset);
                 //ret = esp_partition_write(part, offset, data, count);
@@ -760,7 +765,15 @@ void flash_firmware(const char* fullPath)
             // TODO: verify
 
 
-
+        /******************
+        ******************
+        ******************
+        ******************
+         HERE
+        ******************
+        ******************
+        ******************
+        ******************/
 
             // Notify OK
             sprintf(tempstring, "OK: [%d] Length=%#08x", parts_count, length);
@@ -1004,7 +1017,7 @@ static void ui_draw_page(char** files, int fileCount, int currentItem)
 
 			char* fileName = files[page + line];
 			if (!fileName) abort();
-
+            
 			displayStrings[line] = (char*)malloc(strlen(fileName) + 1);
             strcpy(displayStrings[line], fileName);
             displayStrings[line][strlen(fileName) - 3] = 0; // ".fw" = 3
