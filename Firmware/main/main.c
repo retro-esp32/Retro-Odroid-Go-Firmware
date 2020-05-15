@@ -1059,6 +1059,8 @@
     STEP == 0 ? draw_settings() : get_files();
     clean_up();
     draw_systems();
+
+    
   }
 
   void restore_layout() {
