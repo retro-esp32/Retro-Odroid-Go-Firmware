@@ -41,5 +41,5 @@
 /*
 
 */
-#define BUILD "Version 0 Build 1 (v.0.1)"
+#define BUILD "Version 0 Build 2 (v.0.2)"
 #define FIRMWARE_DESCRIPTION_SIZE (40)

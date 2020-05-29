@@ -35,6 +35,12 @@ BAUD=2000000
 #---------------------------------
 # source helpers/eraser
 
+clear
+echo "--------------------------------------------------------------------------"
+echo -e "${game}  ${green}Erasing Device ${nc} - Hang Tight"
+echo "--------------------------------------------------------------------------"
+esptool.py --chip esp32 --port ${PORT} --baud ${BAUD} --before default_reset --after hard_reset erase_flash
+
 
 clear
 echo "--------------------------------------------------------------------------"
