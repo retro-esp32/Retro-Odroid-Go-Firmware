@@ -306,6 +306,8 @@ static void spi_put_transaction(spi_transaction_t* t)
 //Send a command to the ILI9341. Uses spi_device_transmit, which waits until the transfer is complete.
 static void ili_cmd(const uint8_t cmd)
 {
+    gpio_set_level(LCD_PIN_NUM_DC, 0);
+
     spi_transaction_t* t = spi_get_transaction();
 
     t->length = 8;                     //Command is 8 bits
@@ -320,7 +322,7 @@ static void ili_cmd(const uint8_t cmd)
 static void ili_data(const uint8_t *data, int len)
 {
     if (!len) abort();
-
+    gpio_set_level(LCD_PIN_NUM_DC, 1);
     spi_transaction_t* t = spi_get_transaction();
 
     if (len < 5)
@@ -1472,4 +1474,189 @@ void odroid_display_unlock_sms_display()
     if (!sms_mutex) abort();
 
     xSemaphoreGive(sms_mutex);
+}
+
+
+
+
+
+
+#define PIN_NUM_MISO GPIO_NUM_19
+#define PIN_NUM_MOSI GPIO_NUM_23
+#define PIN_NUM_CLK  GPIO_NUM_18
+#define PIN_NUM_CS   GPIO_NUM_5
+#define PIN_NUM_DC   GPIO_NUM_21
+#define PIN_NUM_RST  CONFIG_HW_LCD_RESET_GPIO
+#define PIN_NUM_BCKL GPIO_NUM_14
+#define LCD_SEL_CMD()   GPIO.out_w1tc = (1 << PIN_NUM_DC) // Low to send command 
+#define LCD_SEL_DATA()  GPIO.out_w1ts = (1 << PIN_NUM_DC) // High to send data
+#define LCD_RST_SET()   GPIO.out_w1ts = (1 << PIN_NUM_RST) 
+#define LCD_RST_CLR()   GPIO.out_w1tc = (1 << PIN_NUM_RST)
+
+
+static void spi_write_byte(const uint8_t data){
+    SET_PERI_REG_BITS(SPI_MOSI_DLEN_REG(SPI_NUM), SPI_USR_MOSI_DBITLEN, 0x7, SPI_USR_MOSI_DBITLEN_S);
+    WRITE_PERI_REG((SPI_W0_REG(SPI_NUM)), data);
+    SET_PERI_REG_MASK(SPI_CMD_REG(SPI_NUM), SPI_USR);
+    while (READ_PERI_REG(SPI_CMD_REG(SPI_NUM))&SPI_USR);
+}
+
+static void LCD_WriteCommand(const uint8_t cmd)
+{
+    LCD_SEL_CMD();
+    spi_write_byte(cmd);
+}
+
+static void LCD_WriteData(const uint8_t data)
+{
+    LCD_SEL_DATA();
+    spi_write_byte(data);
+}
+
+static void  ILI9341_INITIAL ()
+{
+    LCD_BKG_ON();
+    //------------------------------------Reset Sequence-----------------------------------------//
+
+    LCD_RST_SET();
+    ets_delay_us(100000);                                                              
+
+    LCD_RST_CLR();
+    ets_delay_us(200000);                                                              
+
+    LCD_RST_SET();
+    ets_delay_us(200000);                                                             
+
+    LCD_WriteCommand(0xEF);
+    LCD_WriteData(0x03);
+    LCD_WriteData(0x80);
+    LCD_WriteData(0x02);
+
+    LCD_WriteCommand(0xCF);
+    LCD_WriteData(0x00);
+    LCD_WriteData(0XC1);
+    LCD_WriteData(0X30);
+
+    LCD_WriteCommand(0xED);
+    LCD_WriteData(0x64);
+    LCD_WriteData(0x03);
+    LCD_WriteData(0X12);
+    LCD_WriteData(0X81);
+
+    LCD_WriteCommand(0xE8);
+    LCD_WriteData(0x85);
+    LCD_WriteData(0x00);
+    LCD_WriteData(0x78);
+
+    LCD_WriteCommand(0xCB);
+    LCD_WriteData(0x39);
+    LCD_WriteData(0x2C);
+    LCD_WriteData(0x00);
+    LCD_WriteData(0x34);
+    LCD_WriteData(0x02);
+
+    LCD_WriteCommand(0xF7);
+    LCD_WriteData(0x20);
+
+    LCD_WriteCommand(0xEA);
+    LCD_WriteData(0x00);
+    LCD_WriteData(0x00);
+
+    LCD_WriteCommand(0xC0);    //Power control
+    LCD_WriteData(0x23);   //VRH[5:0]
+
+    LCD_WriteCommand(0xC1);    //Power control
+    LCD_WriteData(0x10);   //SAP[2:0];BT[3:0]
+
+    LCD_WriteCommand(0xC5);    //VCM control
+    LCD_WriteData(0x3e);
+    LCD_WriteData(0x28);
+
+    LCD_WriteCommand(0xC7);    //VCM control2
+    LCD_WriteData(0x86);  //--
+
+    LCD_WriteCommand(0x36);    // Memory Access Control
+
+    LCD_WriteData(0x40 | 0x08); // Rotation 0 (portrait mode)
+
+    LCD_WriteCommand(0x3A);
+    LCD_WriteData(0x55);
+
+    LCD_WriteCommand(0xB1);
+    LCD_WriteData(0x00);
+    LCD_WriteData(0x13); // 0x18 79Hz, 0x1B default 70Hz, 0x13 100Hz
+
+    LCD_WriteCommand(0xB6);    // Display Function Control
+    LCD_WriteData(0x08);
+    LCD_WriteData(0x82);
+    LCD_WriteData(0x27);
+
+    LCD_WriteCommand(0xF2);    // 3Gamma Function Disable
+    LCD_WriteData(0x00);
+
+    LCD_WriteCommand(0x26);    //Gamma curve selected
+    LCD_WriteData(0x01);
+
+    LCD_WriteCommand(0xE0);    //Set Gamma
+    LCD_WriteData(0x0F);
+    LCD_WriteData(0x31);
+    LCD_WriteData(0x2B);
+    LCD_WriteData(0x0C);
+    LCD_WriteData(0x0E);
+    LCD_WriteData(0x08);
+    LCD_WriteData(0x4E);
+    LCD_WriteData(0xF1);
+    LCD_WriteData(0x37);
+    LCD_WriteData(0x07);
+    LCD_WriteData(0x10);
+    LCD_WriteData(0x03);
+    LCD_WriteData(0x0E);
+    LCD_WriteData(0x09);
+    LCD_WriteData(0x00);
+
+    LCD_WriteCommand(0xE1);    //Set Gamma
+    LCD_WriteData(0x00);
+    LCD_WriteData(0x0E);
+    LCD_WriteData(0x14);
+    LCD_WriteData(0x03);
+    LCD_WriteData(0x11);
+    LCD_WriteData(0x07);
+    LCD_WriteData(0x31);
+    LCD_WriteData(0xC1);
+    LCD_WriteData(0x48);
+    LCD_WriteData(0x08);
+    LCD_WriteData(0x0F);
+    LCD_WriteData(0x0C);
+    LCD_WriteData(0x31);
+    LCD_WriteData(0x36);
+    LCD_WriteData(0x0F);
+
+    LCD_WriteCommand(0x36);
+    LCD_WriteData(0x40|0x80|0x08);
+
+    //LCD_WriteCommand(0x21);
+    //LCD_WriteData(0x80);  
+
+    //********Window(窗口/地址)****************
+    LCD_WriteCommand(0x2A); //320
+    LCD_WriteData(0x00);
+    LCD_WriteData(0x00);
+    LCD_WriteData(0x01);
+    LCD_WriteData(0x3F);
+
+    LCD_WriteCommand(0x2B); //240
+    LCD_WriteData(0x00);
+    LCD_WriteData(0x00);
+    LCD_WriteData(0x00);
+    LCD_WriteData(0xEF);
+    //****************************** 
+    LCD_WriteCommand(0x11);//Exit Sleep
+    LCD_WriteCommand(0x29);//Display On
+    LCD_WriteCommand(0x2c); 
+
+
+    LCD_WriteCommand(0x11);    //Exit Sleep
+    ets_delay_us(100000);
+    LCD_WriteCommand(0x29);    //Display on
+    ets_delay_us(100000);
 }
