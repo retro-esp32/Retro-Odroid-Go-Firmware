@@ -1,17 +1,28 @@
 #pragma GCC optimize ("O3")
 
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "odroid_display.h"
 
 #include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
 #include "esp_system.h"
-#include "esp_event.h"
-#include "driver/gpio.h"
+//#include "esp_event.h"
+
 #include "driver/spi_master.h"
+#include "driver/gpio.h"
+
 #include "driver/ledc.h"
 #include "driver/rtc_io.h"
 
-#include <string.h>
+#include "esp_log.h"
 
+#define LCD_HOST    HSPI_HOST
+#define DMA_CHAN    2
 
 const int DUTY_MAX = 0x1fff;
 
@@ -22,9 +33,11 @@ const gpio_num_t SPI_PIN_NUM_CLK  = GPIO_NUM_18;
 const gpio_num_t LCD_PIN_NUM_CS   = GPIO_NUM_5;
 const gpio_num_t LCD_PIN_NUM_DC   = GPIO_NUM_21;
 const gpio_num_t LCD_PIN_NUM_BCKL = GPIO_NUM_14;
-const int LCD_BACKLIGHT_ON_VALUE = 1;
-const int LCD_SPI_CLOCK_RATE = 40000000;
 
+const int LCD_BACKLIGHT_ON_VALUE = 1;
+const int LCD_SPI_CLOCK_RATE = SPI_MASTER_FREQ_40M;
+
+#define PARALLEL_LINES 16
 
 #define SPI_TRANSACTION_COUNT (4)
 static spi_transaction_t trans[SPI_TRANSACTION_COUNT];
@@ -69,7 +82,7 @@ bool isBackLightIntialized = false;
 */
 typedef struct {
     uint8_t cmd;
-    uint8_t data[128];
+    uint8_t data[16];
     uint8_t databytes; //No of data in data; bit 7 = delay after set; 0xFF = end of cmds.
 } ili_init_cmd_t;
 
@@ -84,22 +97,13 @@ typedef struct {
 #define MADCTL_MH 0x04
 #define TFT_RGB_BGR 0x08
 
+
 DRAM_ATTR static const ili_init_cmd_t ili_sleep_cmds[] = {
     {TFT_CMD_SWRESET, {0}, 0x80},
     {TFT_CMD_DISPLAY_OFF, {0}, 0x80},
     {TFT_CMD_SLEEP, {0}, 0x80},
     {0, {0}, 0xff}
 };
-
-/*
- *
- *
- *  
- *
- *
- *
- *
- */
 
 /*
  CONFIG_LCD_DRIVER_CHIP_ODROID_GO
@@ -138,10 +142,46 @@ DRAM_ATTR static const ili_init_cmd_t ili_init_cmds[] = {
     {0, {0}, 0xff}
 };
 #endif
+
+/*
+ CONFIG_LCD_DRIVER_CHIP_CUTE_ESP32
+*/
+#ifdef CONFIG_LCD_DRIVER_CHIP_CUTE_ESP32
+
+DRAM_ATTR static const ili_init_cmd_t ili_init_cmds[] = {
+    {TFT_CMD_SWRESET, {0}, 0x80},
+    {0x36, {(1<<7)|(1<<5)}, 1}, // MY | MV | RGB
+    {0x3A, {0x55}, 1},
+    {0xB2, {0x0c, 0x0c, 0x00, 0x33, 0x33}, 5},
+    {0xB7, {0x35}, 1},
+    {0xBB, {0x2B}, 1},
+    {0xC0, {0x2C}, 1},
+    {0xC2, {0x01, 0xFF}, 2},
+    {0xC3, {0x11}, 1},
+    {0xC4, {0x20}, 1},
+    {0xC6, {0x0f}, 1},
+    {0xD0, {0xA4, 0xA1}, 2},
+    {0xE0, {0xD0, 0x00, 0x05, 0x0E, 0x15, 0x0D, 0x37, 0x43, 0x47, 0x09, 0x15, 0x12, 0x16, 0x19}, 14},
+    {0xE1, {0xD0, 0x00, 0x05, 0x0D, 0x0C, 0x06, 0x2D, 0x44, 0x40, 0x0E, 0x1C, 0x18, 0x16, 0x19}, 14},
+
+    {0x2A, {0x00, 0x00, 0x00, 0xEF}, 4},
+    {0x2B, {0x00, 0x00, 0x00, 0x3F}, 4},
+
+    {0x21, {0}, 0x80},
+
+    {0x11, {0}, 0x80},
+    {0x29, {0}, 0x80},
+    {0, {0}, 0xff},
+};
+#endif
+
 /*
  CONFIG_LCD_DRIVER_CHIP_RETRO_ESP32
 */
-#ifdef CONFIG_LCD_DRIVER_CHIP_RETRO_ESP32
+/*
+ CONFIG_LCD_DRIVER_CHIP_RETRO_ESP32
+*/
+#if defined (CONFIG_LCD_DRIVER_CHIP_RETRO_ESP32) || defined(CONFIG_LCD_DRIVER_CHIP_RETRO_ESP32_NEXT)
 DRAM_ATTR static const ili_init_cmd_t ili_init_cmds[] = {
     // VCI=2.8V
     //************* Start Initial Sequence **********//
@@ -155,7 +195,6 @@ DRAM_ATTR static const ili_init_cmd_t ili_init_cmds[] = {
     {0xC0, {0x1B}, 1},    //Power control   //VRH[5:0]
     {0xC1, {0x12}, 1},    //Power control   //SAP[2:0];BT[3:0]
     {0xC5, {0x32, 0x3C}, 2},    //VCM control
-    {0x36, {(MADCTL_MV | MADCTL_MY | TFT_RGB_BGR)}, 1},    // Memory Access Control
     {0x3A, {0x55}, 1},
     {0xB1, {0x00, 0x1B}, 2},  // Frame Rate Control (1B=70, 1F=61, 10=119)
     {0xB6, {0x0A, 0xA2}, 2},    // Display Function Control
@@ -167,15 +206,24 @@ DRAM_ATTR static const ili_init_cmd_t ili_init_cmds[] = {
     {0xE0, {0x0F, 0x31, 0x2B, 0x0C, 0x0E, 0x08, 0x4E, 0xF1, 0x37, 0x07, 0x10, 0x03, 0x0E, 0x09, 0x00}, 15},
     {0XE1, {0x00, 0x0E, 0x14, 0x03, 0x11, 0x07, 0x31, 0xC1, 0x48, 0x08, 0x0F, 0x0C, 0x31, 0x36, 0x0F}, 15},
     
-    // ILI9342 Specific
-    {0x36, {0x40|0x80|0x08}, 1}, // <-- ROTATE
-    {0x21, {0}, 0x80}, // <-- INVERT COLORS
+    {0x2A, {0x00, 0x00, 0x00, 0xEF}, 4},
+    {0x2B, {0x00, 0x00, 0x00, 0x3F}, 4},
+
+    #ifdef CONFIG_LCD_DRIVER_CHIP_RETRO_ESP32_NEXT
+        {0x36, {(MADCTL_MX | MADCTL_MY | TFT_RGB_BGR)}, 1},    // Memory Access Control
+    #endif
+
+    #ifdef CONFIG_LCD_DRIVER_CHIP_RETRO_ESP32
+        {0x36, {(MADCTL_MV | MADCTL_MY | TFT_RGB_BGR)}, 1},    // Memory Access Control
+        {0x21, {0}, 0x80}, // <-- INVERT COLORS
+    #endif
 
     {0x11, {0}, 0x80},    //Exit Sleep
     {0x29, {0}, 0x80},    //Display on
     {0, {0}, 0xff}
 };
 #endif
+
 
 static uint16_t* line_buffer_get()
 {
@@ -306,8 +354,6 @@ static void spi_put_transaction(spi_transaction_t* t)
 //Send a command to the ILI9341. Uses spi_device_transmit, which waits until the transfer is complete.
 static void ili_cmd(const uint8_t cmd)
 {
-    gpio_set_level(LCD_PIN_NUM_DC, 0);
-
     spi_transaction_t* t = spi_get_transaction();
 
     t->length = 8;                     //Command is 8 bits
@@ -322,7 +368,7 @@ static void ili_cmd(const uint8_t cmd)
 static void ili_data(const uint8_t *data, int len)
 {
     if (!len) abort();
-    gpio_set_level(LCD_PIN_NUM_DC, 1);
+
     spi_transaction_t* t = spi_get_transaction();
 
     if (len < 5)
@@ -354,9 +400,16 @@ static void ili_spi_pre_transfer_callback(spi_transaction_t *t)
     gpio_set_level(LCD_PIN_NUM_DC, dc);
 }
 
+
+
 //Initialize the display
 static void ili_init()
 {
+
+    //Initialize non-SPI GPIOs
+    gpio_set_direction(LCD_PIN_NUM_DC, GPIO_MODE_OUTPUT);
+    gpio_set_direction(LCD_PIN_NUM_BCKL, GPIO_MODE_OUTPUT);
+
     int cmd = 0;
 
     //Initialize non-SPI GPIOs
@@ -383,6 +436,7 @@ static void ili_init()
 
 void send_reset_drawing(int left, int top, int width, int height)
 {
+    
     ili_cmd(0x2A);
 
     const uint8_t data1[] = { (left) >> 8, (left) & 0xff, (left + width - 1) >> 8, (left + width - 1) & 0xff };
@@ -392,7 +446,7 @@ void send_reset_drawing(int left, int top, int width, int height)
 
     const uint8_t data2[] = { top >> 8, top & 0xff, (top + height - 1) >> 8, (top + height - 1) & 0xff };
     ili_data(data2, 4);
-
+   
     ili_cmd(0x2C);           //memory write
 }
 
@@ -416,17 +470,17 @@ void send_continue_line(uint16_t *line, int width, int lineCount)
 {
     spi_transaction_t* t;
 
+    #if defined (CONFIG_LCD_DRIVER_CHIP_ODROID_GO) || defined (CONFIG_LCD_DRIVER_CHIP_RETRO_ESP32)
+        t = spi_get_transaction();
 
-    t = spi_get_transaction();
 
+        t->tx_data[0] = 0x3C;   //memory write continue
+        t->length = 8;
+        t->user = (void*)0;
+        t->flags = SPI_TRANS_USE_TXDATA;
 
-    t->tx_data[0] = 0x3C;   //memory write continue
-    t->length = 8;
-    t->user = (void*)0;
-    t->flags = SPI_TRANS_USE_TXDATA;
-
-    spi_put_transaction(t);
-
+        spi_put_transaction(t);
+    #endif
 
     t = spi_get_transaction();
 
@@ -717,38 +771,34 @@ void ili9341_init()
 
     // Initialize SPI
     esp_err_t ret;
-    //spi_device_handle_t spi;
-    spi_bus_config_t buscfg;
-        memset(&buscfg, 0, sizeof(buscfg));
-
-    buscfg.miso_io_num = SPI_PIN_NUM_MISO;
-    buscfg.mosi_io_num = SPI_PIN_NUM_MOSI;
-    buscfg.sclk_io_num = SPI_PIN_NUM_CLK;
-    buscfg.quadwp_io_num=-1;
-    buscfg.quadhd_io_num=-1;
-
-    spi_device_interface_config_t devcfg;
-        memset(&devcfg, 0, sizeof(devcfg));
-
-    devcfg.clock_speed_hz = LCD_SPI_CLOCK_RATE;
-    devcfg.mode = 0;                                //SPI mode 0
-    devcfg.spics_io_num = LCD_PIN_NUM_CS;               //CS pin
-    devcfg.queue_size = 7;                          //We want to be able to queue 7 transactions at a time
-    devcfg.pre_cb = ili_spi_pre_transfer_callback;  //Specify pre-transfer callback to handle D/C line
-    devcfg.flags = SPI_DEVICE_NO_DUMMY;//0; //SPI_DEVICE_HALFDUPLEX;
-
-    //Initialize the SPI bus
-    //ret=spi_bus_initialize(VSPI_HOST, &buscfg, 1);
-    ret=spi_bus_initialize(HSPI_HOST, &buscfg, 1);
+   
+    #define TAG "ST7789"
+	ESP_LOGI(TAG, "SPI_PIN_NUM_MOSI=%d",SPI_PIN_NUM_MOSI);
+    ESP_LOGI(TAG, "SPI_PIN_NUM_MISO=%d",SPI_PIN_NUM_MISO);
+	ESP_LOGI(TAG, "SPI_PIN_NUM_CLK=%d",SPI_PIN_NUM_CLK);
+	spi_bus_config_t buscfg = {
+		.sclk_io_num = SPI_PIN_NUM_CLK,
+		.mosi_io_num = SPI_PIN_NUM_MOSI,
+		.miso_io_num = SPI_PIN_NUM_MISO,
+		.quadwp_io_num = -1,
+		.quadhd_io_num = -1
+	};
+    ret = spi_bus_initialize( HSPI_HOST, &buscfg, 1 );
+    ESP_LOGD(TAG, "spi_bus_initialize=%d",ret);
     assert(ret==ESP_OK);
 
-    //Attach the LCD to the SPI bus
-    //ret=spi_bus_add_device(VSPI_HOST, &devcfg, &spi);
-    ret=spi_bus_add_device(HSPI_HOST, &devcfg, &spi);
-    assert(ret==ESP_OK);
+	spi_device_interface_config_t devcfg={
+		.clock_speed_hz = LCD_SPI_CLOCK_RATE,
+		.queue_size = 7,
+		.mode = 2,
+		.flags = SPI_DEVICE_NO_DUMMY,
+        .pre_cb = ili_spi_pre_transfer_callback,
+        .spics_io_num = LCD_PIN_NUM_CS >= 0 ? LCD_PIN_NUM_CS : -1
+	};
 
-
-
+	ret = spi_bus_add_device( HSPI_HOST, &devcfg, &spi);
+	ESP_LOGD(TAG, "spi_bus_add_device=%d",ret);
+	assert(ret==ESP_OK);       
 
 
     //Initialize the LCD
@@ -1474,189 +1524,4 @@ void odroid_display_unlock_sms_display()
     if (!sms_mutex) abort();
 
     xSemaphoreGive(sms_mutex);
-}
-
-
-
-
-
-
-#define PIN_NUM_MISO GPIO_NUM_19
-#define PIN_NUM_MOSI GPIO_NUM_23
-#define PIN_NUM_CLK  GPIO_NUM_18
-#define PIN_NUM_CS   GPIO_NUM_5
-#define PIN_NUM_DC   GPIO_NUM_21
-#define PIN_NUM_RST  CONFIG_HW_LCD_RESET_GPIO
-#define PIN_NUM_BCKL GPIO_NUM_14
-#define LCD_SEL_CMD()   GPIO.out_w1tc = (1 << PIN_NUM_DC) // Low to send command 
-#define LCD_SEL_DATA()  GPIO.out_w1ts = (1 << PIN_NUM_DC) // High to send data
-#define LCD_RST_SET()   GPIO.out_w1ts = (1 << PIN_NUM_RST) 
-#define LCD_RST_CLR()   GPIO.out_w1tc = (1 << PIN_NUM_RST)
-
-
-static void spi_write_byte(const uint8_t data){
-    SET_PERI_REG_BITS(SPI_MOSI_DLEN_REG(SPI_NUM), SPI_USR_MOSI_DBITLEN, 0x7, SPI_USR_MOSI_DBITLEN_S);
-    WRITE_PERI_REG((SPI_W0_REG(SPI_NUM)), data);
-    SET_PERI_REG_MASK(SPI_CMD_REG(SPI_NUM), SPI_USR);
-    while (READ_PERI_REG(SPI_CMD_REG(SPI_NUM))&SPI_USR);
-}
-
-static void LCD_WriteCommand(const uint8_t cmd)
-{
-    LCD_SEL_CMD();
-    spi_write_byte(cmd);
-}
-
-static void LCD_WriteData(const uint8_t data)
-{
-    LCD_SEL_DATA();
-    spi_write_byte(data);
-}
-
-static void  ILI9341_INITIAL ()
-{
-    LCD_BKG_ON();
-    //------------------------------------Reset Sequence-----------------------------------------//
-
-    LCD_RST_SET();
-    ets_delay_us(100000);                                                              
-
-    LCD_RST_CLR();
-    ets_delay_us(200000);                                                              
-
-    LCD_RST_SET();
-    ets_delay_us(200000);                                                             
-
-    LCD_WriteCommand(0xEF);
-    LCD_WriteData(0x03);
-    LCD_WriteData(0x80);
-    LCD_WriteData(0x02);
-
-    LCD_WriteCommand(0xCF);
-    LCD_WriteData(0x00);
-    LCD_WriteData(0XC1);
-    LCD_WriteData(0X30);
-
-    LCD_WriteCommand(0xED);
-    LCD_WriteData(0x64);
-    LCD_WriteData(0x03);
-    LCD_WriteData(0X12);
-    LCD_WriteData(0X81);
-
-    LCD_WriteCommand(0xE8);
-    LCD_WriteData(0x85);
-    LCD_WriteData(0x00);
-    LCD_WriteData(0x78);
-
-    LCD_WriteCommand(0xCB);
-    LCD_WriteData(0x39);
-    LCD_WriteData(0x2C);
-    LCD_WriteData(0x00);
-    LCD_WriteData(0x34);
-    LCD_WriteData(0x02);
-
-    LCD_WriteCommand(0xF7);
-    LCD_WriteData(0x20);
-
-    LCD_WriteCommand(0xEA);
-    LCD_WriteData(0x00);
-    LCD_WriteData(0x00);
-
-    LCD_WriteCommand(0xC0);    //Power control
-    LCD_WriteData(0x23);   //VRH[5:0]
-
-    LCD_WriteCommand(0xC1);    //Power control
-    LCD_WriteData(0x10);   //SAP[2:0];BT[3:0]
-
-    LCD_WriteCommand(0xC5);    //VCM control
-    LCD_WriteData(0x3e);
-    LCD_WriteData(0x28);
-
-    LCD_WriteCommand(0xC7);    //VCM control2
-    LCD_WriteData(0x86);  //--
-
-    LCD_WriteCommand(0x36);    // Memory Access Control
-
-    LCD_WriteData(0x40 | 0x08); // Rotation 0 (portrait mode)
-
-    LCD_WriteCommand(0x3A);
-    LCD_WriteData(0x55);
-
-    LCD_WriteCommand(0xB1);
-    LCD_WriteData(0x00);
-    LCD_WriteData(0x13); // 0x18 79Hz, 0x1B default 70Hz, 0x13 100Hz
-
-    LCD_WriteCommand(0xB6);    // Display Function Control
-    LCD_WriteData(0x08);
-    LCD_WriteData(0x82);
-    LCD_WriteData(0x27);
-
-    LCD_WriteCommand(0xF2);    // 3Gamma Function Disable
-    LCD_WriteData(0x00);
-
-    LCD_WriteCommand(0x26);    //Gamma curve selected
-    LCD_WriteData(0x01);
-
-    LCD_WriteCommand(0xE0);    //Set Gamma
-    LCD_WriteData(0x0F);
-    LCD_WriteData(0x31);
-    LCD_WriteData(0x2B);
-    LCD_WriteData(0x0C);
-    LCD_WriteData(0x0E);
-    LCD_WriteData(0x08);
-    LCD_WriteData(0x4E);
-    LCD_WriteData(0xF1);
-    LCD_WriteData(0x37);
-    LCD_WriteData(0x07);
-    LCD_WriteData(0x10);
-    LCD_WriteData(0x03);
-    LCD_WriteData(0x0E);
-    LCD_WriteData(0x09);
-    LCD_WriteData(0x00);
-
-    LCD_WriteCommand(0xE1);    //Set Gamma
-    LCD_WriteData(0x00);
-    LCD_WriteData(0x0E);
-    LCD_WriteData(0x14);
-    LCD_WriteData(0x03);
-    LCD_WriteData(0x11);
-    LCD_WriteData(0x07);
-    LCD_WriteData(0x31);
-    LCD_WriteData(0xC1);
-    LCD_WriteData(0x48);
-    LCD_WriteData(0x08);
-    LCD_WriteData(0x0F);
-    LCD_WriteData(0x0C);
-    LCD_WriteData(0x31);
-    LCD_WriteData(0x36);
-    LCD_WriteData(0x0F);
-
-    LCD_WriteCommand(0x36);
-    LCD_WriteData(0x40|0x80|0x08);
-
-    //LCD_WriteCommand(0x21);
-    //LCD_WriteData(0x80);  
-
-    //********Window(窗口/地址)****************
-    LCD_WriteCommand(0x2A); //320
-    LCD_WriteData(0x00);
-    LCD_WriteData(0x00);
-    LCD_WriteData(0x01);
-    LCD_WriteData(0x3F);
-
-    LCD_WriteCommand(0x2B); //240
-    LCD_WriteData(0x00);
-    LCD_WriteData(0x00);
-    LCD_WriteData(0x00);
-    LCD_WriteData(0xEF);
-    //****************************** 
-    LCD_WriteCommand(0x11);//Exit Sleep
-    LCD_WriteCommand(0x29);//Display On
-    LCD_WriteCommand(0x2c); 
-
-
-    LCD_WriteCommand(0x11);    //Exit Sleep
-    ets_delay_us(100000);
-    LCD_WriteCommand(0x29);    //Display on
-    ets_delay_us(100000);
 }
