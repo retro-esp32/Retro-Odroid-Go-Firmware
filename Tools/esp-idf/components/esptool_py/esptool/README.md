@@ -46,7 +46,7 @@ To see all options for a particular command, append `-h` to the command name. ie
 
 ### Serial Port
 
-* The serial port is selected using the `-p` option, like `-p /dev/ttyUSB0` (Linux and macOS) or `-p COM1` (Windows).
+* The serial port is selected using the `-p` option, like `-p /dev/cu.usbserial-AC00UQ47` (Linux and macOS) or `-p COM1` (Windows).
 * A default serial port can be specified by setting the `ESPTOOL_PORT` environment variable.
 * If no `-p` option or `ESPTOOL_PORT` value is specified, `esptool.py` will enumerate all connected serial ports and try each one until it finds an Espressif device connected (new behaviour in v2.4.0).
 
@@ -97,7 +97,7 @@ See the [Troubleshooting](#troubleshooting) section if the write_flash command i
 You may also need to specify arguments for [flash mode and flash size](#flash-modes), if you wish to override the defaults. For example:
 
 ```
-esptool.py --port /dev/ttyUSB0 write_flash --flash_mode qio --flash_size 32m 0x0 bootloader.bin 0x1000 my_app.bin
+esptool.py --port /dev/cu.usbserial-AC00UQ47 write_flash --flash_mode qio --flash_size 32m 0x0 bootloader.bin 0x1000 my_app.bin
 ```
 
 Since esptool v2.0, these options are not often needed as the default is to keep the flash mode and size from the `.bin` image file, and to detect the flash size. See the [Flash Modes](#flash-modes) section for more details.

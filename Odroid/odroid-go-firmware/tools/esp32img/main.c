@@ -133,7 +133,7 @@ static void extract_partitions(FILE* fp)
     strncpy(image_name, filename, len);
     strcat(image_name, image_ext);
 
-    printf("./esptool.py --port \"/dev/ttyUSB0\" --baud 921600 write_flash -z --flash_mode dio --flash_freq 80m --flash_size detect 0 %s\n", image_name);
+    printf("./esptool.py --port \"/dev/cu.usbserial-AC00UQ47\" --baud 921600 write_flash -z --flash_mode dio --flash_freq 80m --flash_size detect 0 %s\n", image_name);
 
 
     fseek(fp, 0, SEEK_SET);
@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
         printf("\t%s filename\n", argv[0]);
         printf("\n");
         printf("Example:\n");
-        printf("\t./esptool.py --port \"/dev/ttyUSB0\" --baud 921600 read_flash 0 0x1000000 flash.bin\n");
+        printf("\t./esptool.py --port \"/dev/cu.usbserial-AC00UQ47\" --baud 921600 read_flash 0 0x1000000 flash.bin\n");
         printf("\t%s flash.bin\n", argv[0]);
         printf("\n");
         exit(1);

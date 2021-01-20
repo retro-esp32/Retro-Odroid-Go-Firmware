@@ -143,7 +143,7 @@ class ESPLoader(object):
     CHIP_NAME = "Espressif device"
     IS_STUB = False
 
-    DEFAULT_PORT = "/dev/ttyUSB0"
+    DEFAULT_PORT = "/dev/cu.usbserial-AC00UQ47"
 
     # Commands supported by ESP8266 ROM bootloader
     ESP_FLASH_BEGIN = 0x02

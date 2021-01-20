@@ -40,9 +40,9 @@ The test directory contains an integration suite with some integration tests for
 
 `./test_esptool.py <serial port> <name of chip> <baud rate> [optional test name(s)]`
 
-For example, to run all tests on an ESP32 board connected to /dev/ttyUSB0, at 230400bps:
+For example, to run all tests on an ESP32 board connected to /dev/cu.usbserial-AC00UQ47, at 230400bps:
 
-`./test_esptool.py /dev/ttyUSB0 esp32 230400`
+`./test_esptool.py /dev/cu.usbserial-AC00UQ47 esp32 230400`
 
 Or to run the TestFlashing suite only on an ESP8266 board connected to /dev/ttyUSB2` at 460800bps:
 
