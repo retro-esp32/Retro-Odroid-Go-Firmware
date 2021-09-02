@@ -252,6 +252,12 @@
           for(int c = dx; c < (dx+cols); c++) {
             //buffer[i] = FONT_5x5[r][c] == 0 ? GUI.bg : current ? WHITE : GUI.fg;
             buffer[i] = FONT_5x7[r][c] == 0 ? GUI.bg : current ? GUI.hl : GUI.fg;
+
+            ///*
+            buffer[i] = current ? 
+              FONT_5x7_SELECTED[r][c] == 0 ? GUI.bg : GUI.hl:
+              FONT_5x7[r][c] == 0 ? GUI.bg : GUI.fg;
+            //*/
             i++;
           }
         }

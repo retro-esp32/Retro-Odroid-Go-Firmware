@@ -128,24 +128,24 @@ Discarded input sections
  .xt.lit        0x0000000000000000        0x8 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_clock.o)
  .xt.prop       0x0000000000000000       0x48 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_clock.o)
  .literal.esp_log_buffer_hex_internal
-                0x0000000000000000       0x40 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
+                0x0000000000000000       0x48 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
  .literal.esp_log_buffer_char_internal
-                0x0000000000000000       0x40 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
+                0x0000000000000000       0x48 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
  .literal.esp_log_buffer_hexdump_internal
-                0x0000000000000000       0x7c /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
+                0x0000000000000000       0x84 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
  .text          0x0000000000000000        0x0 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
  .data          0x0000000000000000        0x0 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
  .bss           0x0000000000000000        0x0 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
  .rodata.str1.1
                 0x0000000000000000       0x95 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
  .text.esp_log_buffer_hex_internal
-                0x0000000000000000       0xe7 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
+                0x0000000000000000       0xf7 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
  .text.esp_log_buffer_char_internal
-                0x0000000000000000       0xdc /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
+                0x0000000000000000       0xe7 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
  .text.esp_log_buffer_hexdump_internal
-                0x0000000000000000      0x180 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
+                0x0000000000000000      0x190 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
  .xt.lit        0x0000000000000000       0x20 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
- .xt.prop       0x0000000000000000      0x2dc /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
+ .xt.prop       0x0000000000000000      0x300 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
  .literal.esp_rom_spiflash_program_page_internal$constprop$4
                 0x0000000000000000       0x28 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/spi_flash/libspi_flash.a(spi_flash_rom_patch.o)
  .literal.esp_rom_spiflash_lock
@@ -2982,7 +2982,7 @@ OUTPUT(/Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/b
  .debug_abbrev  0x0000000000002b0a       0x60 /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_bswapsi2.o)
  .debug_abbrev  0x0000000000002b6a      0x15f /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_udivdi3.o)
 
-.debug_loc      0x0000000000000000     0x538b
+.debug_loc      0x0000000000000000     0x53f8
  .debug_loc     0x0000000000000000      0x133 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/main/libmain.a(bootloader_start.o)
  .debug_loc     0x0000000000000133      0x37b /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_common.o)
  .debug_loc     0x00000000000004ae      0x4a9 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_flash.o)
@@ -2994,16 +2994,16 @@ OUTPUT(/Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/b
  .debug_loc     0x00000000000024e0      0x15c /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_partitions.o)
  .debug_loc     0x000000000000263c      0x23c /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(flash_qio_mode.o)
  .debug_loc     0x0000000000002878       0x53 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_clock.o)
- .debug_loc     0x00000000000028cb      0x247 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
- .debug_loc     0x0000000000002b12      0x785 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/spi_flash/libspi_flash.a(spi_flash_rom_patch.o)
- .debug_loc     0x0000000000003297       0x21 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(cpu_util.o)
- .debug_loc     0x00000000000032b8      0xae9 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk.o)
- .debug_loc     0x0000000000003da1      0x244 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
- .debug_loc     0x0000000000003fe5      0x419 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_init.o)
- .debug_loc     0x00000000000043fe      0x2ce /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
- .debug_loc     0x00000000000046cc      0x2b6 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_wdt.o)
- .debug_loc     0x0000000000004982       0x21 /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_bswapsi2.o)
- .debug_loc     0x00000000000049a3      0x9e8 /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_udivdi3.o)
+ .debug_loc     0x00000000000028cb      0x2b4 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
+ .debug_loc     0x0000000000002b7f      0x785 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/spi_flash/libspi_flash.a(spi_flash_rom_patch.o)
+ .debug_loc     0x0000000000003304       0x21 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(cpu_util.o)
+ .debug_loc     0x0000000000003325      0xae9 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk.o)
+ .debug_loc     0x0000000000003e0e      0x244 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
+ .debug_loc     0x0000000000004052      0x419 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_init.o)
+ .debug_loc     0x000000000000446b      0x2ce /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
+ .debug_loc     0x0000000000004739      0x2b6 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_wdt.o)
+ .debug_loc     0x00000000000049ef       0x21 /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_bswapsi2.o)
+ .debug_loc     0x0000000000004a10      0x9e8 /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_udivdi3.o)
 
 .debug_aranges  0x0000000000000000      0x640
  .debug_aranges
@@ -3073,7 +3073,7 @@ OUTPUT(/Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/b
  .debug_ranges  0x0000000000000968       0xa8 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_wdt.o)
  .debug_ranges  0x0000000000000a10       0x60 /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_udivdi3.o)
 
-.debug_line     0x0000000000000000     0x7d3e
+.debug_line     0x0000000000000000     0x7d48
  .debug_line    0x0000000000000000      0x472 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/main/libmain.a(bootloader_start.o)
  .debug_line    0x0000000000000472      0x7a3 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_common.o)
  .debug_line    0x0000000000000c15      0x677 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_flash.o)
@@ -3088,16 +3088,16 @@ OUTPUT(/Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/b
  .debug_line    0x0000000000004721      0x558 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/log/liblog.a(log.o)
  .debug_line    0x0000000000004c79      0xa76 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/spi_flash/libspi_flash.a(spi_flash_rom_patch.o)
  .debug_line    0x00000000000056ef      0x1b5 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(cpu_util.o)
- .debug_line    0x00000000000058a4      0x12a /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(gpio_periph.o)
- .debug_line    0x00000000000059ce      0xe6f /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk.o)
- .debug_line    0x000000000000683d      0x480 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
- .debug_line    0x0000000000006cbd      0x45c /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_init.o)
- .debug_line    0x0000000000007119      0x4f0 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
- .debug_line    0x0000000000007609      0x510 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_wdt.o)
- .debug_line    0x0000000000007b19       0x90 /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_bswapsi2.o)
- .debug_line    0x0000000000007ba9      0x195 /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_udivdi3.o)
+ .debug_line    0x00000000000058a4      0x12c /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(gpio_periph.o)
+ .debug_line    0x00000000000059d0      0xe6f /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk.o)
+ .debug_line    0x000000000000683f      0x480 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
+ .debug_line    0x0000000000006cbf      0x45c /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_init.o)
+ .debug_line    0x000000000000711b      0x4f0 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
+ .debug_line    0x000000000000760b      0x518 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_wdt.o)
+ .debug_line    0x0000000000007b23       0x90 /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_bswapsi2.o)
+ .debug_line    0x0000000000007bb3      0x195 /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_udivdi3.o)
 
-.debug_str      0x0000000000000000     0x4e24
+.debug_str      0x0000000000000000     0x4e28
  .debug_str     0x0000000000000000      0x3a7 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/main/libmain.a(bootloader_start.o)
                                         0x41a (size before relaxing)
  .debug_str     0x00000000000003a7      0x564 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/bootloader_support/libbootloader_support.a(bootloader_common.o)
@@ -3126,21 +3126,21 @@ OUTPUT(/Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/b
                                         0x779 (size before relaxing)
  .debug_str     0x0000000000003c51       0x98 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(cpu_util.o)
                                         0x1a4 (size before relaxing)
- .debug_str     0x0000000000003ce9       0x68 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(gpio_periph.o)
-                                        0x16e (size before relaxing)
- .debug_str     0x0000000000003d51      0x7e0 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk.o)
+ .debug_str     0x0000000000003ce9       0x6a /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(gpio_periph.o)
+                                        0x170 (size before relaxing)
+ .debug_str     0x0000000000003d53      0x7e0 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk.o)
                                         0xb3e (size before relaxing)
- .debug_str     0x0000000000004531      0x11e /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
+ .debug_str     0x0000000000004533      0x11e /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_clk_init.o)
                                         0x6f7 (size before relaxing)
- .debug_str     0x000000000000464f       0xe8 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_init.o)
+ .debug_str     0x0000000000004651       0xe8 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_init.o)
                                         0x26d (size before relaxing)
- .debug_str     0x0000000000004737      0x16c /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
+ .debug_str     0x0000000000004739      0x16c /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_time.o)
                                         0x4a2 (size before relaxing)
- .debug_str     0x00000000000048a3      0x35f /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_wdt.o)
-                                        0x540 (size before relaxing)
- .debug_str     0x0000000000004c02      0x146 /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_bswapsi2.o)
+ .debug_str     0x00000000000048a5      0x361 /Users/andrueu/Desktop/github/RetroESP32/Public/Firmware/Firmware/build/bootloader/soc/libsoc.a(rtc_wdt.o)
+                                        0x542 (size before relaxing)
+ .debug_str     0x0000000000004c06      0x146 /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_bswapsi2.o)
                                         0x1ec (size before relaxing)
- .debug_str     0x0000000000004d48       0xdc /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_udivdi3.o)
+ .debug_str     0x0000000000004d4c       0xdc /Users/andrueu/esp/xtensa-esp32-elf/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/libgcc.a(_udivdi3.o)
                                         0x266 (size before relaxing)
 
 .comment        0x0000000000000000       0x3a
